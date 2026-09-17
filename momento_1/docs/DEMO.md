@@ -1,6 +1,6 @@
 # Guion de la demo — 6 minutos
 
-**Equipo:** Erick Albornoz · Frank Palma
+**Equipo:** Erick Albornoz · Frank Palma · Ana María Ruiz
 **Regla que manda:** mostrar, no contar. El tiempo que se va explicando es tiempo que
 no se ve el producto.
 
@@ -23,10 +23,18 @@ El reto pide cuatro puntos; la rúbrica pide que *"la demo abra"*. Los ponemos e
 orden de la rúbrica: **primero el producto funcionando**, después las decisiones. Si
 algo se sale de tiempo, que sea lo que se cuenta, no lo que se ve.
 
-**Quién habla:** se decide en el ensayo, no aquí. Los dos se saben los cuatro bloques
-completos, porque el orden de presentación se sortea el mismo día y porque si uno falta,
-el otro presenta solo. Lo único fijo es que se alternan: nadie habla dos bloques
-seguidos.
+**Quién habla:** se decide en el ensayo, no aquí. Los tres se saben los cuatro bloques
+completos, porque el orden de presentación se sortea el mismo día y porque si alguien
+falta, los otros presentan igual.
+
+Dos reglas fijas, y la segunda importa más de lo que parece:
+
+1. Cada uno abre al menos un bloque. Son cuatro bloques y tres personas: el que sobra lo
+   toma quien menos haya hablado.
+2. **El cambio de persona no cuesta tiempo.** Con tres presentadores en seis minutos, lo
+   que hunde la demo no es lo que se dice, son las transiciones: "ah, ahora sigues tú",
+   el computador que pasa de mano, el hilo que se pierde. Se ensaya el cambio, no solo el
+   contenido. Un solo computador, uno maneja el mouse todo el tiempo.
 
 | Tiempo | Punto | Qué se hace exactamente |
 |---|---|---|
@@ -43,16 +51,16 @@ Wi-Fi apagado desde el principio: no hay nada que dependa de internet. Lo demás
 |---|---|
 | El navegador no abre el archivo | La terminal: `node producto/pruebas.js` → 22/22. Las mismas reglas, sin navegador. |
 | `localStorage` está bloqueado (modo privado, política del equipo) | Es un caso borde previsto: la aplicación avisa en pantalla y sigue funcionando en memoria. **Se enseña como parte de la demo**, no se disimula: es CB-10. |
-| Un computador no arranca | El otro tiene el repositorio clonado y probado antes. Los dos están listos para presentar solos. |
+| Un computador no arranca | Los otros dos tienen el repositorio clonado y probado antes. Cualquiera de los tres puede presentar solo. |
 | No hay proyector o no se ve | El repositorio está en GitHub: se comparte el enlace y se hace el recorrido por los archivos. |
 | La sesión de la herramienta no carga los skills | Se muestran los tres `SKILL.md` abiertos y la tabla de resultados ya llena de `pruebas_skills.md`. La evidencia está escrita, no depende de que algo corra en vivo. |
 | Nos quedamos sin tiempo | Se sacrifica el punto 4 (la decisión que defendemos) y se deja para las preguntas. El producto y la cadena **no** se sacrifican. |
 
 ## Las preguntas que van a hacer
 
-Responde el que esté hablando en ese momento. No hay preguntas "de Erick" ni "de Frank":
-si una pregunta solo la puede responder uno de los dos, el trabajo se repartió mal y la
-rúbrica lo va a encontrar.
+Responde el que esté hablando en ese momento. No hay preguntas "de Erick", "de Frank" ni
+"de Ana María": si una pregunta solo la puede responder uno de los tres, el trabajo se
+repartió mal y la rúbrica lo va a encontrar.
 
 | Pregunta | Respuesta |
 |---|---|
@@ -62,7 +70,7 @@ rúbrica lo va a encontrar.
 | *"¿Qué encontró la revisión con contexto fresco?"* | `docs/decisiones/revision_contexto_fresco.md` — **hay que tenerlo lleno antes de la demo.** |
 | *"Explíquenme qué hace esta función"* (al azar) | `maximaCadena` es la más probable: ordena las franjas que la persona ya tiene ese día, mete la nueva, y mide la cadena más larga con saltos de dos horas. Mira el resultado final, no el movimiento — por eso atrapa CB-4, rellenar un hueco. |
 | *"¿Por qué así y no de otra forma?"* | Contar solo los vecinos inmediatos de la franja pedida deja pasar el caso de reservar 6:00 y 10:00 y después rellenar las 8:00. Lo encontramos probando, está en `docs/decisiones/loop.md`. |
-| *"¿Quién hizo qué?"* | Los dos, todo. Trabajamos en pareja sobre cada tarea, rotando quién escribe. Está justificado en `docs/PLAN.md`: un reparto por módulos deja a cada uno dominando la mitad, y aquí preguntan al azar. |
+| *"¿Quién hizo qué?"* | Los tres, todo. Trabajamos sobre cada tarea juntos, rotando quién escribe. Está justificado en `docs/PLAN.md`: un reparto por módulos deja a cada uno dominando un tercio, y aquí preguntan al azar. |
 | *"¿Qué descartaron?"* | Login falso, marcar asistencia desde la app, reservas recurrentes, histórico, vista semanal. Cada uno con su razón en `SPEC.md §3`. |
 | *"Si empezaran de nuevo, ¿qué cambiarían?"* | Escribiríamos los casos de prueba **antes** que las reglas. Dos de las tres correcciones al contexto salieron al escribir las pruebas, no al escribir el código: CB-4 y el reloj por parámetro. |
 

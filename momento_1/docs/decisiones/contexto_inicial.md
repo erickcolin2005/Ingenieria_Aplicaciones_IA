@@ -4,7 +4,7 @@
 > antes del plan y antes de cualquier línea del producto. Se conserva sin cambios
 > para poder comparar contra `CLAUDE.md` (versión final).
 >
-> Fecha: 2026-09-17 · Escrita por: Erick Albornoz y Frank Palma
+> Fecha: 2026-09-17 · Escrita por: Erick Albornoz, Frank Palma y Ana María Ruiz
 
 ---
 

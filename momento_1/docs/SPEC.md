@@ -1,6 +1,6 @@
 # SPEC — Sistema de reservas del laboratorio
 
-**Equipo:** Erick Albornoz · Frank Palma
+**Equipo:** Erick Albornoz · Frank Palma · Ana María Ruiz
 **Caso:** A (aplicación HTML sin librerías ni servidor)
 **Versión:** 1.0 · 2026-09-17
 

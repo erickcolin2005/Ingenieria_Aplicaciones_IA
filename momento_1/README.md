@@ -1,7 +1,7 @@
 # Momento 1 — Sistema de reservas del laboratorio
 
 **Curso:** Ingeniería de Aplicaciones con IA · Universidad Cooperativa de Colombia
-**Equipo:** Erick Albornoz · Frank Palma
+**Equipo:** Erick Albornoz · Frank Palma · Ana María Ruiz
 **Caso:** A — aplicación HTML sin librerías ni servidor
 
 20 puestos, franjas de dos horas, de 6:00 a 20:00. Construido con la cadena
@@ -21,7 +21,7 @@ node producto/pruebas.js        # en terminal
 ```
 
 o doble clic en `producto/pruebas.html` para verlos en el navegador. Debe decir
-**22/22**.
+hoy **22/22**, y ninguno puede quedar en FALLA. Sube a 23 cuando se cierre T-10.
 
 > `producto/reglas.js` tiene que estar en la misma carpeta que los dos HTML. Los tres
 > archivos viajan juntos.

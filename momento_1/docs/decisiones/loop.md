@@ -62,6 +62,6 @@ confundirlos con los automáticos.
 Pendiente por diseño. Lo que tiene que ser distinto no es la persona, es **el
 contexto**: una sesión nueva que no vio cómo se construyó. Pedirle a la misma sesión
 que critique su propio trabajo es pedirle que se contradiga, y rara vez lo hace bien.
-La corren los dos juntos, como todo lo demás.
+La corren los tres juntos, como todo lo demás.
 
 Protocolo y resultados: `docs/decisiones/revision_contexto_fresco.md`.

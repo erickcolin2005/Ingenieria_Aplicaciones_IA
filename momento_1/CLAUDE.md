@@ -2,8 +2,8 @@
 
 ## Qué es esto
 
-Momento 1 del curso Ingeniería de Aplicaciones con IA. Equipo: Erick Albornoz y
-Frank Palma. Producto: un sistema de reservas del laboratorio (20 puestos, franjas
+Momento 1 del curso Ingeniería de Aplicaciones con IA. Equipo: Erick Albornoz,
+Frank Palma y Ana María Ruiz. Producto: un sistema de reservas del laboratorio (20 puestos, franjas
 de 2 horas, 6:00–20:00) construido con la cadena `escribir-spec` → `escribir-plan`
 → `ejecutar-plan`.
 
@@ -13,7 +13,7 @@ escribir código.
 ## Cómo se corre
 
 ```
-node producto/pruebas.js          # los criterios de aceptación. Debe decir 22/22.
+node producto/pruebas.js          # los criterios de aceptación. Ninguno puede quedar en FALLA.
 start producto\reservas.html      # la aplicación (Windows). Mac: open producto/reservas.html
 start producto\pruebas.html       # los mismos criterios, en el navegador
 ```

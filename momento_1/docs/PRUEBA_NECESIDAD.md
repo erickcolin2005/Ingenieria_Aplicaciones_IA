@@ -1,6 +1,6 @@
 # Prueba de necesidad — ¿este caso necesita un modelo de lenguaje?
 
-**Equipo:** Erick Albornoz · Frank Palma
+**Equipo:** Erick Albornoz · Frank Palma · Ana María Ruiz
 
 ## Respuesta corta
 

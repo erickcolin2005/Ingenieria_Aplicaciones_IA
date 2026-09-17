@@ -1,6 +1,6 @@
 # Ingeniería de Aplicaciones con IA
 
-**Equipo:** Erick Albornoz · Frank Palma
+**Equipo:** Erick Albornoz · Frank Palma · Ana María Ruiz
 Universidad Cooperativa de Colombia · Ingeniería de Sistemas
 
 | Momento | Qué es | Estado |
@@ -18,7 +18,7 @@ Los criterios de aceptación se ejecutan:
 
 ```bash
 cd momento_1
-node producto/pruebas.js     # 22/22
+node producto/pruebas.js     # hoy: 22/22, ninguno en FALLA
 ```
 
 El recorrido completo —qué se decidió, qué se descartó y por qué— está en
