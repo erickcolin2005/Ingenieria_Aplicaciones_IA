@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reservas del laboratorio</title>
+<style>
+  :root {
+    --tinta: #16202c; --suave: #5b6b7d; --linea: #d6dee7; --fondo: #f6f8fa;
+    --libre: #ffffff; --propia: #1f7a4d; --ajena: #e7ecf1; --muerta: #eef1f4;
+    --alerta: #b4232b; --acento: #1d4ed8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 20px 24px 48px;
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--tinta); background: var(--fondo);
+  }
+  h1 { font-size: 21px; margin: 0 0 2px; }
+  .sub { color: var(--suave); font-size: 13px; margin: 0 0 18px; }
+
+  .panel {
+    display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end;
+    background: #fff; border: 1px solid var(--linea); border-radius: 8px;
+    padding: 14px 16px; margin-bottom: 14px;
+  }
+  .campo { display: flex; flex-direction: column; gap: 4px; }
+  .campo label { font-size: 12px; font-weight: 600; color: var(--suave); }
+  .campo input {
+    font: inherit; padding: 7px 9px; border: 1px solid var(--linea);
+    border-radius: 6px; background: #fff; color: inherit;
+  }
+  .campo input:focus { outline: 2px solid var(--acento); outline-offset: 1px; }
+  .campo .pista { font-size: 11px; color: var(--suave); }
+  #motivo { min-width: 260px; }
+
+  #mensaje {
+    min-height: 40px; padding: 10px 12px; border-radius: 6px; font-size: 14px;
+    border: 1px solid transparent; margin-bottom: 14px; background: #fff;
+  }
+  #mensaje.error { background: #fdf0f0; border-color: #f0c7c7; color: var(--alerta); }
+  #mensaje.bien  { background: #eef8f2; border-color: #bfe3ce; color: #14603c; }
+  #mensaje.info  { background: #fff; border-color: var(--linea); color: var(--suave); }
+
+  .aviso {
+    font-size: 12px; color: #7a5a12; background: #fdf6e3;
+    border: 1px solid #ecdca8; border-radius: 6px; padding: 8px 11px; margin-bottom: 16px;
+  }
+
+  .marco { overflow-x: auto; background: #fff; border: 1px solid var(--linea); border-radius: 8px; }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; }
+  th, td { border: 1px solid var(--linea); padding: 0; text-align: center; }
+  thead th { background: #eef2f6; font-size: 12px; padding: 7px 4px; font-weight: 600; white-space: nowrap; }
+  tbody th {
+    background: #f9fafb; font-size: 12px; font-weight: 600; padding: 0 9px;
+    text-align: left; white-space: nowrap; width: 1%;
+  }
+  tbody th .estrella { color: #b8860b; }
+  td button {
+    width: 100%; height: 30px; border: 0; background: var(--libre);
+    font: 11px/1 system-ui, sans-serif; color: var(--suave); cursor: pointer;
+  }
+  td button:hover:not(:disabled) { background: #e8effa; color: var(--acento); }
+  td button:focus-visible { outline: 2px solid var(--acento); outline-offset: -2px; }
+  td button.propia { background: var(--propia); color: #fff; font-weight: 600; }
+  td button.propia:hover { background: #17603b; }
+  td button.ajena { background: var(--ajena); color: #8a97a5; cursor: not-allowed; }
+  td button:disabled { background: var(--muerta); color: #b3bdc7; cursor: not-allowed; }
+
+  .leyenda { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12px; color: var(--suave); margin-top: 12px; }
+  .leyenda span { display: flex; align-items: center; gap: 6px; }
+  .muestra { width: 13px; height: 13px; border: 1px solid var(--linea); border-radius: 3px; }
+  .pie { margin-top: 22px; font-size: 12px; color: var(--suave); }
+  .pie a { color: var(--acento); }
+</style>
+</head>
+<body>
+
+<h1>Reservas del laboratorio</h1>
+<p class="sub">20 puestos · franjas de dos horas · de 6:00 a 20:00</p>
+
+<div class="aviso" id="avisoLocal">
+  Las reservas se guardan en <strong>este navegador y en este computador</strong>. Quien abra el
+  archivo en otra máquina verá su propio tablero. Es una limitación conocida y declarada
+  (docs/SPEC.md, FA-4): sin servidor no hay estado compartido.
+</div>
+
+<div class="panel">
+  <div class="campo">
+    <label for="fecha">Día</label>
+    <input type="date" id="fecha">
+    <span class="pista">Hoy y los 6 días siguientes</span>
+  </div>
+  <div class="campo">
+    <label for="codigo">Tu código de estudiante</label>
+    <input type="text" id="codigo" inputmode="numeric" maxlength="10" placeholder="123456" autocomplete="off">
+    <span class="pista">6 a 10 dígitos</span>
+  </div>
+  <div class="campo">
+    <label for="motivo">Motivo</label>
+    <input type="text" id="motivo" maxlength="120" placeholder="¿Para qué necesitas la GPU?" autocomplete="off">
+    <span class="pista">Solo para P-19 y P-20 · mínimo 15 caracteres</span>
+  </div>
+</div>
+
+<div id="mensaje" class="info" role="status" aria-live="polite">
+  Escribe tu código y haz clic en un puesto libre para reservarlo.
+</div>
+
+<div class="marco"><table id="tablero"><thead></thead><tbody></tbody></table></div>
+
+<div class="leyenda">
+  <span><i class="muestra" style="background:#fff"></i> Libre</span>
+  <span><i class="muestra" style="background:#1f7a4d;border-color:#1f7a4d"></i> Tuya (clic para cancelar)</span>
+  <span><i class="muestra" style="background:#e7ecf1"></i> De otra persona</span>
+  <span><i class="muestra" style="background:#eef1f4"></i> Ya pasó</span>
+  <span><span class="estrella" style="color:#b8860b">★</span> Equipo especializado</span>
+</div>
+
+<p class="pie">
+  Reglas en <code>reglas.js</code> · criterios verificables en <code>pruebas.html</code> ·
+  especificación en <code>docs/SPEC.md</code>
+</p>
+
+<script src="reglas.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var CLAVE = 'reservas_lab_v1';
+  var R = window.REGLAS;
+  var estado = R.crearEstado();
+  var persistencia = true;
+
+  var $fecha = document.getElementById('fecha');
+  var $codigo = document.getElementById('codigo');
+  var $motivo = document.getElementById('motivo');
+  var $mensaje = document.getElementById('mensaje');
+  var $tabla = document.getElementById('tablero');
+
+  function ahora() { return new Date(); }   // el único reloj de la aplicación
+
+  // ------------------------------------------------------- almacenamiento
+
+  function cargar() {
+    try {
+      var crudo = window.localStorage.getItem(CLAVE);
+      estado = R.normalizarEstado(crudo ? JSON.parse(crudo) : null);
+    } catch (e) {
+      // CB-10: modo privado, cuota llena o JSON corrupto. No se pierde la sesión.
+      estado = R.crearEstado();
+      persistencia = false;
+    }
+  }
+
+  function guardar() {
+    if (!persistencia) return false;
+    try {
+      window.localStorage.setItem(CLAVE, JSON.stringify(estado));
+      return true;
+    } catch (e) {
+      persistencia = false;
+      return false;
+    }
+  }
+
+  // ---------------------------------------------------------------- avisos
+
+  function decir(texto, tipo) {
+    $mensaje.textContent = texto;
+    $mensaje.className = tipo || 'info';
+  }
+
+  // ---------------------------------------------------------------- pintar
+
+  function pintarEncabezado() {
+    var fila = '<tr><th>Puesto</th>';
+    R.FRANJAS.forEach(function (f) { fila += '<th>' + R.etiquetaFranja(f) + '</th>'; });
+    $tabla.tHead.innerHTML = fila + '</tr>';
+  }
+
+  function pintar() {
+    var fecha = $fecha.value;
+    var codigo = $codigo.value.trim();
+    var momento = ahora();
+    var cuerpo = $tabla.tBodies[0];
+    cuerpo.innerHTML = '';
+
+    R.PUESTOS.forEach(function (puesto) {
+      var tr = document.createElement('tr');
+      var th = document.createElement('th');
+      th.innerHTML = puesto + (R.esPuestoEspecial(puesto) ? ' <span class="estrella" title="Equipo especializado">★</span>' : '');
+      tr.appendChild(th);
+
+      R.FRANJAS.forEach(function (franja) {
+        var td = document.createElement('td');
+        var boton = document.createElement('button');
+        var reserva = R.buscarReserva(estado, puesto, fecha, franja);
+        var pasada = R.inicioFranja(fecha, franja) <= momento;
+
+        if (reserva && reserva.codigo === codigo && codigo) {
+          boton.className = 'propia';
+          boton.textContent = 'Tuya';
+          boton.title = 'Clic para cancelar' + (reserva.motivo ? ' · motivo: ' + reserva.motivo : '');
+          boton.dataset.accion = 'cancelar';
+          boton.dataset.id = reserva.id;
+        } else if (reserva) {
+          boton.className = 'ajena';
+          boton.textContent = 'Ocupado';
+          boton.title = 'Reservado por otra persona';
+          boton.dataset.accion = 'ajena';
+        } else if (pasada) {
+          boton.textContent = '—';
+          boton.disabled = true;
+          boton.title = 'Esa franja ya pasó';
+        } else {
+          boton.textContent = 'Libre';
+          boton.dataset.accion = 'reservar';
+          boton.dataset.puesto = puesto;
+          boton.dataset.franja = franja;
+        }
+
+        td.appendChild(boton);
+        tr.appendChild(td);
+      });
+
+      cuerpo.appendChild(tr);
+    });
+  }
+
+  // --------------------------------------------------------------- acciones
+
+  function reservar(puesto, franja) {
+    var datos = {
+      puesto: puesto, fecha: $fecha.value, franja: Number(franja),
+      codigo: $codigo.value.trim(), motivo: $motivo.value.trim()
+    };
+    var r = R.agregarReserva(estado, datos, ahora());
+    if (!r.ok) { decir(r.error, 'error'); return; }
+
+    estado = r.estado;
+    var guardado = guardar();
+    decir('Listo: ' + puesto + ' el ' + datos.fecha + ' en la franja ' + R.etiquetaFranja(datos.franja) + '.' +
+          (guardado ? '' : ' Ojo: no se pudo guardar, la reserva se pierde al cerrar.'), guardado ? 'bien' : 'error');
+    pintar();
+  }
+
+  function cancelar(id) {
+    var r = R.cancelarReserva(estado, { id: id, codigo: $codigo.value.trim() }, ahora());
+    if (!r.ok) { decir(r.error, 'error'); return; }
+
+    estado = r.estado;
+    guardar();
+    decir('Reserva cancelada. El puesto queda libre.', 'bien');
+    pintar();
+  }
+
+  $tabla.addEventListener('click', function (evento) {
+    var boton = evento.target.closest('button');
+    if (!boton || !boton.dataset.accion) return;
+
+    if (boton.dataset.accion === 'ajena') {
+      decir('Ese puesto ya está reservado por otra persona en esa franja.', 'info');
+    } else if (boton.dataset.accion === 'cancelar') {
+      cancelar(boton.dataset.id);
+    } else {
+      reservar(boton.dataset.puesto, boton.dataset.franja);
+    }
+  });
+
+  $fecha.addEventListener('change', pintar);
+  $codigo.addEventListener('input', pintar);
+
+  // ----------------------------------------------------------------- inicio
+
+  (function iniciar() {
+    var hoy = ahora();
+    var tope = new Date(hoy.getTime() + R.DIAS_ADELANTE * 86400000);
+    $fecha.value = R.fechaISO(hoy);
+    $fecha.min = R.fechaISO(hoy);
+    $fecha.max = R.fechaISO(tope);
+
+    cargar();
+    pintarEncabezado();
+    pintar();
+
+    if (!persistencia) {
+      decir('No se pudo leer el almacenamiento del navegador. La aplicación funciona, pero las reservas no persistirán al cerrar.', 'error');
+    }
+  })();
+})();
+</script>
+</body>
+</html>
