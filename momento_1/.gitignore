@@ -1,11 +1,11 @@
-# Material de trabajo propio, fuera del repositorio del curso
-sistema de captación auditoría SEO y generador de clientes.md
-
 # Credenciales — nunca al repositorio
 .env
 .env.local
 *.key
 *.pem
+
+# Configuración local de la herramienta (no la política del equipo)
+.claude/settings.local.json
 
 # Sistema operativo
 Thumbs.db
