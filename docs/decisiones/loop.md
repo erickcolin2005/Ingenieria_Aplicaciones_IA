@@ -59,8 +59,9 @@ confundirlos con los automáticos.
 
 ## Paso 4 bis — La revisión con contexto fresco
 
-Pendiente por diseño: la hace **Erick**, que no escribió la interfaz, en una sesión
-nueva que no vio cómo se construyó. Pedirle a la misma sesión que critique su propio
-trabajo es pedirle que se contradiga, y rara vez lo hace bien.
+Pendiente por diseño. Lo que tiene que ser distinto no es la persona, es **el
+contexto**: una sesión nueva que no vio cómo se construyó. Pedirle a la misma sesión
+que critique su propio trabajo es pedirle que se contradiga, y rara vez lo hace bien.
+La corren los dos juntos, como todo lo demás.
 
 Protocolo y resultados: `docs/decisiones/revision_contexto_fresco.md`.

@@ -1,6 +1,6 @@
 # Revisión con contexto fresco
 
-**Tarea:** T-8 · **Responsable:** Erick Albornoz
+**Tarea:** T-8 · **La corren los dos**
 **Estado: PENDIENTE — se ejecuta en sesión nueva antes de la demo.**
 
 Esta página está a propósito sin llenar. Los hallazgos de una revisión que no se hizo

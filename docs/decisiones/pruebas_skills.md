@@ -1,8 +1,8 @@
 # Pruebas de la cadena de skills
 
 **Estado: MONTADAS, SIN EJECUTAR.** Las columnas de resultado están vacías a
-propósito. Todas estas pruebas exigen una **sesión nueva** —y una de ellas, la
-máquina de Frank— así que no se pueden ejecutar desde la sesión en la que se
+propósito. Todas estas pruebas exigen una **sesión nueva** —y una de ellas, la otra
+máquina— así que no se pueden ejecutar desde la sesión en la que se
 escribieron los skills: el resultado estaría contaminado por la conversación.
 
 **Antes de la demo hay que correrlas y llenar las tablas.** Se anota lo que pase,
@@ -29,7 +29,7 @@ escribir-spec", la descripción no sirve: nadie la va a nombrar en el uso real.
 | # | Qué se pide (pegar literal) | Qué debe pasar | ¿Se activó el correcto? | Notas |
 |---|---|---|---|---|
 | P-1 | *"Necesito dejar por escrito qué vamos a construir y cómo sabremos que quedó bien."* | Se carga `escribir-spec` | | |
-| P-2 | *"Ya tenemos claro qué hay que hacer. Repártelo entre Erick y Frank con tiempos."* | Se carga `escribir-plan` | | |
+| P-2 | *"Ya tenemos claro qué hay que hacer. Organízalo en tareas con tiempos y dime por dónde empezar."* (sin dar nombres, para que además se vea si cumple la regla dura 7 y los pregunta) | Se carga `escribir-plan` **y pregunta los nombres antes de asignar nada** | | |
 | P-3 | *"Arranca con lo primero de la lista."* | Se carga `ejecutar-plan` | | |
 | P-4 | *"Explícame qué hace la función maximaCadena."* | **No se carga ninguno.** Los tres se tienen que quedar quietos ante una pregunta que no es su trabajo | | |
 
@@ -55,7 +55,7 @@ La segunda columna es la que demuestra si la cadena mejoró o solo cambió.
 | P-5 | Activación correcta | Pedir un reparto de trabajo sin nombrar el skill | Se carga solo | |
 | P-6 | No se activa de más | Pedir una especificación | Carga `escribir-spec`, no este | |
 | P-7 | Estabilidad | Correrlo **dos veces** sobre `docs/SPEC.md`, en sesiones distintas | Misma primera tarea · total de tareas con diferencia máxima de 1 · dependencias idénticas | |
-| P-8 | Usable por otros | **Frank** lo corre en **su** máquina, sin que Erick le explique nada | Funciona sin asistencia | |
+| P-8 | Usable por otros | Se corre en **la otra máquina**, sin que nadie explique nada. Es la única prueba en la que importa quién la ejecuta, y no porque el trabajo esté repartido: lo que se está probando es que el skill no dependa de la configuración de un computador | Funciona sin asistencia | |
 
 Para P-7, anotar las dos corridas:
 

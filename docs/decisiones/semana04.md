@@ -72,6 +72,20 @@ Consideramos las tres opciones:
 | Enlace simbólico | Es lo correcto en Mac y Linux. En Windows exige permisos de administrador o el modo desarrollador, y no controlamos las máquinas del laboratorio. Además git lo trata como archivo, no como enlace, y en la máquina del otro integrante aparecería roto. |
 | **Dos copias + script** | El costo conocido es que se desincronizan. Lo asumimos y lo mitigamos: `sync_skills.ps1` se corre **antes de cada prueba de skills**, y está en el procedimiento escrito de `pruebas_skills.md`. Un riesgo que se nombra y tiene un paso asignado es manejable; uno que se olvida, no. |
 
+## Cómo repartimos el trabajo: no lo repartimos
+
+Las dos personas trabajan sobre todas las tareas, rotando quién escribe. No hay
+módulos de uno ni del otro.
+
+La razón es la sustentación: la rúbrica dice que el evaluador señala una función **al
+azar** y pregunta qué hace. Un reparto por módulos produce dos personas que dominan la
+mitad cada una, y "esa parte la hizo el otro" es la segunda peor respuesta posible,
+después de "lo hizo la IA". El costo —se avanzaría más rápido en paralelo— lo asumimos
+a cambio de que cualquiera de los dos pueda defender cualquier línea del repositorio.
+
+La única excepción es la prueba P-8, que exige dos máquinas distintas por definición.
+Ahí no se reparte trabajo: se prueba portabilidad.
+
 ## Reglas duras que agregamos
 
 Sobre las once de `escribir-plan` y las ocho de `ejecutar-plan`, agregamos seis
@@ -94,12 +108,16 @@ una sugerencia no se puede incumplir.
 
 Completo en `docs/DEMO.md`. Resumen:
 
-| Tiempo | Punto | Quién |
-|---|---|---|
-| 0:00 – 2:00 | El producto funcionando, sin internet, con los rechazos de R-1, R-2 y R-7 en vivo, y 22/22 criterios | Frank |
-| 2:00 – 3:00 | Las dos decisiones más difíciles de la spec y qué descartamos | Erick |
-| 3:00 – 5:00 | La cadena: activación sin nombrar el skill, la prueba que falló, y el criterio no verificable | Los dos |
-| 5:00 – 6:00 | La decisión que defendemos: ningún modelo dentro del producto, y los seis ejes que lo sustentan | Erick |
+| Tiempo | Punto |
+|---|---|
+| 0:00 – 2:00 | El producto funcionando, sin internet, con los rechazos de R-1, R-2 y R-7 en vivo, y 22/22 criterios |
+| 2:00 – 3:00 | Las dos decisiones más difíciles de la spec y qué descartamos |
+| 3:00 – 5:00 | La cadena: activación sin nombrar el skill, la prueba que falló, y el criterio no verificable |
+| 5:00 – 6:00 | La decisión que defendemos: ningún modelo dentro del producto, y los seis ejes que lo sustentan |
+
+**Quién dice qué se decide en el ensayo**, no aquí: los dos se saben los cuatro
+bloques. Es la misma razón por la que no repartimos las tareas — ver "Cómo repartimos
+el trabajo" en `docs/PLAN.md`.
 
 **Por qué el producto abre** y no las decisiones, que es el orden del reto: la rúbrica
 premia que *"la demo abra"*. Si algo se sale de tiempo, que sea lo que se cuenta y no
@@ -120,8 +138,8 @@ todas dependen de algo que no se puede hacer desde la sesión donde se escribier
 |---|---|---|
 | Las pruebas de activación de los tres skills | Exigen una **sesión nueva**. Correrlas en la sesión que los escribió mide la conversación, no la descripción: el resultado sería falso | `docs/decisiones/pruebas_skills.md` |
 | La medición "antes y después" de `escribir-spec` | Misma razón: son dos corridas en dos sesiones | `docs/decisiones/pruebas_skills.md`, grupo B |
-| La prueba P-8 (el skill corriendo en la máquina de Frank) | Exige la otra máquina | `docs/decisiones/pruebas_skills.md`, grupo C |
-| La revisión con contexto fresco | Exige una sesión que no haya visto cómo se construyó. La hace Erick, que no escribió la interfaz | `docs/decisiones/revision_contexto_fresco.md` |
+| La prueba P-8 (el skill corriendo en la otra máquina) | Exige el segundo computador | `docs/decisiones/pruebas_skills.md`, grupo C |
+| La revisión con contexto fresco | Exige una sesión que no haya visto cómo se construyó. Lo que cambia es el contexto, no la persona | `docs/decisiones/revision_contexto_fresco.md` |
 | Las pruebas de la política de permisos | Exigen una sesión abierta **dentro de `momento_1`** para que `.claude/settings.json` aplique | `docs/decisiones/pruebas_permisos.md` |
 | Los dos ensayos cronometrados de la demo | Se hacen dos días antes, no la noche anterior | `docs/DEMO.md`, última tabla |
 
