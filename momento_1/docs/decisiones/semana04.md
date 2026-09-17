@@ -1,6 +1,6 @@
 # Decisiones — Semana 4
 
-**Equipo:** Erick Albornoz · Frank Palma
+**Equipo:** Erick Albornoz · Frank Palma · Ana María Ruiz
 **Caso elegido:** A — aplicación HTML sin librerías ni servidor
 
 ---
@@ -74,14 +74,15 @@ Consideramos las tres opciones:
 
 ## Cómo repartimos el trabajo: no lo repartimos
 
-Las dos personas trabajan sobre todas las tareas, rotando quién escribe. No hay
-módulos de uno ni del otro.
+Las tres personas trabajan sobre todas las tareas, rotando quién escribe. No hay
+módulos de uno ni de otro.
 
 La razón es la sustentación: la rúbrica dice que el evaluador señala una función **al
-azar** y pregunta qué hace. Un reparto por módulos produce dos personas que dominan la
-mitad cada una, y "esa parte la hizo el otro" es la segunda peor respuesta posible,
-después de "lo hizo la IA". El costo —se avanzaría más rápido en paralelo— lo asumimos
-a cambio de que cualquiera de los dos pueda defender cualquier línea del repositorio.
+azar** y pregunta qué hace. Un reparto por módulos produce tres personas que dominan un
+tercio cada una, y "esa parte la hizo otro" es la segunda peor respuesta posible,
+después de "lo hizo la IA". El costo —se avanzaría bastante más rápido en paralelo, y
+con tres personas el desperdicio es mayor que con dos— lo asumimos a cambio de que
+cualquiera de los tres pueda defender cualquier línea del repositorio.
 
 La única excepción es la prueba P-8, que exige dos máquinas distintas por definición.
 Ahí no se reparte trabajo: se prueba portabilidad.
@@ -115,9 +116,11 @@ Completo en `docs/DEMO.md`. Resumen:
 | 3:00 – 5:00 | La cadena: activación sin nombrar el skill, la prueba que falló, y el criterio no verificable |
 | 5:00 – 6:00 | La decisión que defendemos: ningún modelo dentro del producto, y los seis ejes que lo sustentan |
 
-**Quién dice qué se decide en el ensayo**, no aquí: los dos se saben los cuatro
-bloques. Es la misma razón por la que no repartimos las tareas — ver "Cómo repartimos
-el trabajo" en `docs/PLAN.md`.
+**Quién dice qué se decide en el ensayo**, no aquí: los tres se saben los cuatro
+bloques. Son cuatro bloques y tres personas, así que alguien habla dos veces; lo que se
+ensaya de verdad es el cambio de presentador, que es donde se va el tiempo. Es la misma
+razón por la que no repartimos las tareas — ver "Cómo repartimos el trabajo" en
+`docs/PLAN.md`.
 
 **Por qué el producto abre** y no las decisiones, que es el orden del reto: la rúbrica
 premia que *"la demo abra"*. Si algo se sale de tiempo, que sea lo que se cuenta y no
@@ -142,6 +145,7 @@ todas dependen de algo que no se puede hacer desde la sesión donde se escribier
 | La revisión con contexto fresco | Exige una sesión que no haya visto cómo se construyó. Lo que cambia es el contexto, no la persona | `docs/decisiones/revision_contexto_fresco.md` |
 | Las pruebas de la política de permisos | Exigen una sesión abierta **dentro de `momento_1`** para que `.claude/settings.json` aplique | `docs/decisiones/pruebas_permisos.md` |
 | Los dos ensayos cronometrados de la demo | Se hacen dos días antes, no la noche anterior | `docs/DEMO.md`, última tabla |
+| **T-10**: `normalizarEstado` no detecta reservas duplicadas | Es un defecto real, encontrado después de dar T-5 por terminada. Se deja abierto a propósito: es la tarea con la que se prueba `ejecutar-plan` de verdad | `docs/PLAN.md`, T-10 · `docs/decisiones/pruebas_skills.md`, grupo D.1 |
 
 Y estas quedaron **fuera por decisión**, no por tiempo: reservas recurrentes,
 histórico de uso, estado compartido entre máquinas, vista semanal y exportar a CSV.

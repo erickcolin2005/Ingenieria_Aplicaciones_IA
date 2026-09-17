@@ -65,7 +65,29 @@ Para P-7, anotar las dos corridas:
 | Número de tareas | | |
 | ¿Dependencias iguales? | | |
 
-## Grupo D — El skill `ejecutar-plan`, la prueba del criterio no verificable
+## Grupo D — El skill `ejecutar-plan`
+
+### D.1 — Ejecutar una tarea de verdad (T-10)
+
+Antes de la prueba trucada, la prueba honesta: que el skill ejecute una tarea real del
+plan, de principio a fin. **T-10** existe justamente para esto — es un defecto abierto y
+verificable, no una tarea inventada para la ocasión.
+
+**Prompt (sin nombrar el skill):** *"arranca con la tarea de los duplicados"*
+
+| Lo que hay que ver | Resultado |
+|---|---|
+| ¿Anunció qué tarea y por qué esa? | |
+| ¿Dijo qué archivos iba a tocar y **esperó** confirmación? | |
+| ¿Verificó contra el criterio del plan, y no contra lo que le pareció? | |
+| ¿Reportó PASA/FALLA con la salida real de `node producto/pruebas.js`? | |
+| ¿Se detuvo, o siguió solo con la siguiente tarea? | |
+| Conteo final de criterios (debe pasar de 22 a 23) | |
+
+Esta es la prueba que convierte los skills de *"escritos pero nunca usados"* en *"se
+usaron"*, que en la rúbrica son 4 puntos contra 11.
+
+### D.2 — La prueba del criterio no verificable
 
 Es la prueba que más se falla, y es la que vale 10% del reto de la semana 4.
 
