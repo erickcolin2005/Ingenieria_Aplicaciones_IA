@@ -111,7 +111,7 @@ Completo en `docs/DEMO.md`. Resumen:
 
 | Tiempo | Punto |
 |---|---|
-| 0:00 – 2:00 | El producto funcionando, sin internet, con los rechazos de R-1, R-2 y R-7 en vivo, y 22/22 criterios |
+| 0:00 – 2:00 | El producto funcionando, sin internet, con los rechazos de R-1, R-2 y R-7 en vivo, y 23/23 criterios |
 | 2:00 – 3:00 | Las dos decisiones más difíciles de la spec y qué descartamos |
 | 3:00 – 5:00 | La cadena: activación sin nombrar el skill, la prueba que falló, y el criterio no verificable |
 | 5:00 – 6:00 | La decisión que defendemos: ningún modelo dentro del producto, y los seis ejes que lo sustentan |
@@ -145,7 +145,11 @@ todas dependen de algo que no se puede hacer desde la sesión donde se escribier
 | La revisión con contexto fresco | Exige una sesión que no haya visto cómo se construyó. Lo que cambia es el contexto, no la persona | `docs/decisiones/revision_contexto_fresco.md` |
 | Las pruebas de la política de permisos | Exigen una sesión abierta **dentro de `momento_1`** para que `.claude/settings.json` aplique | `docs/decisiones/pruebas_permisos.md` |
 | Los dos ensayos cronometrados de la demo | Se hacen dos días antes, no la noche anterior | `docs/DEMO.md`, última tabla |
-| **T-10**: `normalizarEstado` no detecta reservas duplicadas | Es un defecto real, encontrado después de dar T-5 por terminada. Se deja abierto a propósito: es la tarea con la que se prueba `ejecutar-plan` de verdad | `docs/PLAN.md`, T-10 · `docs/decisiones/pruebas_skills.md`, grupo D.1 |
+
+**Cerrado desde que se escribió esta tabla:** T-10 (los duplicados al cargar). Lo ejecutó
+`ejecutar-plan` con el protocolo completo y la suite pasó de 22 a 23 criterios. El
+registro está en `docs/decisiones/pruebas_skills.md`, grupo D.1, y el incremento en
+`docs/decisiones/loop.md`.
 
 Y estas quedaron **fuera por decisión**, no por tiempo: reservas recurrentes,
 histórico de uso, estado compartido entre máquinas, vista semanal y exportar a CSV.

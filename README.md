@@ -18,7 +18,7 @@ Los criterios de aceptación se ejecutan:
 
 ```bash
 cd momento_1
-node producto/pruebas.js     # hoy: 22/22, ninguno en FALLA
+node producto/pruebas.js     # 23/23, ninguno en FALLA
 ```
 
 El recorrido completo —qué se decidió, qué se descartó y por qué— está en

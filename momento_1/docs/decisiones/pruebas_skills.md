@@ -83,10 +83,36 @@ verificable, no una tarea inventada para la ocasión.
 | ¿Dijo qué archivos iba a tocar y **esperó** confirmación? | **Sí.** Enumeró `producto/reglas.js` y `producto/pruebas.js`, dijo qué le haría a cada uno, aclaró qué **no** iba a tocar (la firma de `normalizarEstado`, las demás funciones, los casos existentes) y se detuvo a pedir confirmación. |
 | ¿Copió el criterio literal del plan? | **Sí**, entre comillas, en vez de parafrasearlo. |
 | ¿Respetó la regla 3 —trabajo fuera del plan se reporta, no se hace de paso? | **Sí, y es el hallazgo más valioso de la prueba.** Encontró dos cosas reales por el camino —el encabezado de `PLAN.md` decía "derivado de SPEC v1.0" cuando la spec ya iba en v1.1, y la fila de T-10 estaba fuera del bloque de la tabla— y las reportó con la frase *"no voy a tocar sin que lo pidas"* en vez de arreglarlas. Las dos eran ciertas. |
-| ¿Verificó contra el criterio del plan, y no contra lo que le pareció? | |
-| ¿Reportó PASA/FALLA con la salida real de `node producto/pruebas.js`? | |
-| ¿Se detuvo, o siguió solo con la siguiente tarea? | |
-| Conteo final de criterios (debe pasar de 22 a 23) | |
+| ¿Verificó contra el criterio del plan, y no contra lo que le pareció? | **Sí.** Citó el criterio literal —*"El caso nuevo de `pruebas.js` pasa y el conteo total sube de 22 a 23"*— y lo respondió con los dos números, no con un "quedó bien". |
+| ¿Reportó PASA/FALLA con la salida real de `node producto/pruebas.js`? | **Sí**, con la línea de CA-18 y el conteo. Verificado por nosotros aparte: la suite da 23/23. |
+| ¿Se detuvo, o siguió solo con la siguiente tarea? | **Se detuvo.** Cerró con *"DETENIDO. Esperando instrucción para la siguiente tarea."* y —regla 6— no marcó T-10 como hecha en el plan: *"Eso lo marca quien confirma, no yo."* |
+| Conteo final de criterios (debe pasar de 22 a 23) | **23/23.** |
+
+### Lo que hizo de más, y que nadie le pidió
+
+**Probó que la prueba prueba algo.** Corrió el `pruebas.js` nuevo contra el `reglas.js`
+**anterior**, en una copia fuera del repositorio, y mostró que CA-18 falla ahí:
+
+```
+FALLA CA-18 — Dos reservas sobre la misma celda cargan una sola, la primera del arreglo
+        La celda P-07 2026-09-18 franja 10 cargó 2 reservas, no 1.
+22/23 criterios pasan.
+```
+
+Lo repetimos nosotros y da lo mismo. Esto no está en el protocolo del skill y es la
+diferencia entre una prueba y un adorno: un caso que pasa igual con el arreglo y sin él
+no verifica nada, y es el error más común al agregar pruebas después del código.
+
+Además blindó el caso contra tres formas de romperlo por accidente: ids y códigos
+distintos (si alguien cambia la comparación a `id`, el caso falla — eso es CB-15),
+verifica **cuál** sobrevive y no solo que quede una, y comprueba que no descarte de más
+(una celda vecina sigue viva).
+
+### Veredicto
+
+`ejecutar-plan` **funciona**. Cumplió el protocolo completo —anuncia, espera, cambia,
+verifica, reporta con evidencia, se detiene— y las reglas duras 1, 3 y 6 se vieron
+actuando sobre casos reales, no en teoría.
 
 **Nota de método:** los dos hallazgos fuera de alcance se arreglaron por separado, **no**
 en el mismo ciclo. Pedirle al skill que además los corrigiera habría roto su regla 1

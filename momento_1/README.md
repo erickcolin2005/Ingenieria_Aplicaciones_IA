@@ -21,7 +21,7 @@ node producto/pruebas.js        # en terminal
 ```
 
 o doble clic en `producto/pruebas.html` para verlos en el navegador. Debe decir
-hoy **22/22**, y ninguno puede quedar en FALLA. Sube a 23 cuando se cierre T-10.
+**23/23**, y ninguno puede quedar en FALLA.
 
 > `producto/reglas.js` tiene que estar en la misma carpeta que los dos HTML. Los tres
 > archivos viajan juntos.

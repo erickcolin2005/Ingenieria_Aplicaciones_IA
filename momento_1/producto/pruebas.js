@@ -209,6 +209,33 @@
       return null;
     }},
 
+    { ca: 'CA-18', titulo: 'Dos reservas sobre la misma celda cargan una sola, la primera del arreglo (R-8, CB-15)', fn: function () {
+      // Ids distintos y códigos distintos a propósito: la comparación es por
+      // puesto + fecha + franja, nunca por id (CB-15).
+      var duplicado = { version: 1, reservas: [
+        { id: 'viejo-a', puesto: 'P-07', fecha: MANANA, franja: 10, codigo: '111111' },
+        { id: 'viejo-b', puesto: 'P-07', fecha: MANANA, franja: 10, codigo: '222222' },
+        { id: 'viejo-c', puesto: 'P-08', fecha: MANANA, franja: 10, codigo: '333333' }
+      ]};
+      var estado = R.normalizarEstado(duplicado);
+
+      var enLaCelda = estado.reservas.filter(function (r) {
+        return r.puesto === 'P-07' && r.fecha === MANANA && r.franja === 10;
+      });
+      if (enLaCelda.length !== 1) return 'La celda P-07 ' + MANANA + ' franja 10 cargó ' + enLaCelda.length + ' reservas, no 1.';
+      if (enLaCelda[0].codigo !== '111111') return 'Se conservó la reserva equivocada: quedó la de ' + enLaCelda[0].codigo + ' y debía quedar la primera del arreglo (111111).';
+      if (estado.reservas.length !== 2) return 'Se descartó de más: quedaron ' + estado.reservas.length + ' reservas y debían quedar 2 (la celda duplicada y P-08).';
+
+      // La misma celda en otra fecha o en otra franja no es la misma celda.
+      var distintas = R.normalizarEstado({ version: 1, reservas: [
+        { puesto: 'P-07', fecha: MANANA, franja: 10, codigo: '111111' },
+        { puesto: 'P-07', fecha: HOY, franja: 10, codigo: '111111' },
+        { puesto: 'P-07', fecha: MANANA, franja: 12, codigo: '111111' }
+      ]});
+      if (distintas.reservas.length !== 3) return 'Se descartaron reservas de celdas distintas: quedaron ' + distintas.reservas.length + ' de 3.';
+      return null;
+    }},
+
     { ca: 'CA-15', titulo: 'Todo rechazo explica qué regla se violó', fn: function () {
       var estado = conReservas([{ puesto: 'P-07', fecha: MANANA, franja: 14, codigo: '111111' }]);
       var rechazos = [

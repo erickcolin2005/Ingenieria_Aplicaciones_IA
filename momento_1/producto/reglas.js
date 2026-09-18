@@ -96,12 +96,27 @@ function crearEstado() {
   return { version: 1, reservas: [] };
 }
 
+/** Celda = la terna puesto + fecha + franja. Es lo que R-1 y R-8 declaran único.
+ *  Nunca se compara por `id`: un estado viejo puede traer ids con otro formato, y
+ *  dos reservas de la misma celda no compartirían identificador (CB-15). */
+function claveCelda(puesto, fechaTexto, franja) {
+  return puesto + '|' + fechaTexto + '|' + franja;
+}
+
 /** CB-9 y CB-10: un estado guardado por una versión anterior, con campos
  *  faltantes o con basura adentro, se limpia — no se descarta. Nadie debería
- *  perder sus reservas porque nosotros agregamos un campo. */
+ *  perder sus reservas porque nosotros agregamos un campo.
+ *
+ *  R-8 y CB-15: si el estado ya llegó con dos reservas sobre la misma celda
+ *  —escrito a mano, copiado entre máquinas, o producido por dos pestañas—, se
+ *  conserva la primera del arreglo y las siguientes se descartan. R-1 no alcanza
+ *  a impedirlo: solo actúa sobre lo que pasa por validarReserva, y esto entra por
+ *  otro lado. El descarte es silencioso a propósito (SPEC.md §4.4 y §7). */
 function normalizarEstado(crudo) {
   var estado = crearEstado();
   if (!crudo || typeof crudo !== 'object' || !Array.isArray(crudo.reservas)) return estado;
+
+  var celdasVistas = {};
 
   for (var i = 0; i < crudo.reservas.length; i++) {
     var r = crudo.reservas[i];
@@ -110,6 +125,11 @@ function normalizarEstado(crudo) {
     if (FRANJAS.indexOf(Number(r.franja)) === -1) continue;
     if (!esFechaValida(r.fecha)) continue;
     if (typeof r.codigo !== 'string' || !/^\d{6,10}$/.test(r.codigo)) continue;
+
+    // R-8: la celda ya la tomó una reserva anterior del arreglo.
+    var clave = claveCelda(r.puesto, r.fecha, Number(r.franja));
+    if (celdasVistas[clave] === true) continue;
+    celdasVistas[clave] = true;
 
     estado.reservas.push({
       id: typeof r.id === 'string' && r.id ? r.id : idDeReserva(r.puesto, r.fecha, Number(r.franja)),

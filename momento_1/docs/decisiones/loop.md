@@ -42,15 +42,29 @@ Cada plan lleva las tres casillas de decisión: **contexto** (qué archivos impo
 | **Planear · restricciones** | Sin librerías, sin `fetch`, sin `import` — `file://` bloquea los módulos ES. El `<script src>` clásico sí funciona con doble clic. La interfaz **no reimplementa** ninguna regla: si aparece un `if` con una regla de negocio en el HTML, está mal. |
 | **Planear · criterio** | CA-1, CA-2, CA-3, CA-16 mirando la pantalla; CA-17 abriendo `pruebas.html`. |
 | **Ejecutar** | Cuadrícula de 20 × 7, tres estados por celda, aviso permanente de que el estado es local. |
-| **Verificar** | 140 celdas confirmadas (20 × 7). La suite corre igual en el navegador y en Node: verificamos que `pruebas.html` produzca el mismo 22/22 que la terminal, cargando los dos archivos en el orden del `<script src>`. |
+| **Verificar** | 140 celdas confirmadas (20 × 7). La suite corre igual en el navegador y en Node: verificamos que `pruebas.html` produzca el mismo conteo que la terminal, cargando los dos archivos en el orden del `<script src>`. |
 | **Límite encontrado** | `localStorage` no está disponible con `file://` en algunos navegadores y en modo privado. La aplicación no puede asumir que guardar funciona: ahora avisa en pantalla y sigue trabajando en memoria (CB-10). |
+
+## Incremento 4 — Duplicados al cargar (T-10)
+
+El primero que recorrió el loop **con la cadena de skills**, no a mano.
+
+| Paso | Qué pasó |
+|---|---|
+| **Explorar** | `escribir-spec` recibió el encargo *"dejar por escrito qué vamos a construir y cómo sabremos que quedó bien"*, detectó que era ambiguo, listó las tres lecturas posibles y preguntó en vez de rellenar. Eligió cerrar el hueco de T-10: era lo único que el equipo iba a construir sin tenerlo escrito. |
+| **Planear · contexto** | `producto/reglas.js` (`normalizarEstado`) y `producto/pruebas.js`. Nada más. |
+| **Planear · restricciones** | La firma `normalizarEstado(crudo) -> estado` **no cambia**: está fijada en el contrato del plan y ya hay código llamándola. La comparación es por puesto + fecha + franja, nunca por `id` (CB-15). Ningún caso de prueba existente se modifica. |
+| **Planear · criterio** | *"El caso nuevo de `pruebas.js` pasa y el conteo total sube de 22 a 23."* |
+| **Ejecutar** | `ejecutar-plan` anunció la tarea y por qué esa, dijo qué iba a tocar, **esperó confirmación**, hizo el cambio y se detuvo. Antes de tocar nada dejó la línea base escrita: 22/22. |
+| **Verificar** | 23/23. Y una verificación que no le pedimos: corrió el caso nuevo contra el `reglas.js` **anterior** y mostró que ahí falla. Sin eso, un caso que pasa no distingue entre "la regla funciona" y "la prueba no prueba nada". |
+| **Límite encontrado** | R-1 no alcanzaba a proteger la invariante "una celda, una reserva": solo actúa sobre lo que pasa por `validarReserva`, y un estado guardado entra por otro lado. La regla que faltaba no era de rechazo, era de saneamiento al cargar. |
 
 ## Verificación acumulada
 
 ```
 $ node producto/pruebas.js
 ...
-22/22 criterios pasan.
+23/23 criterios pasan.
 ```
 
 Los criterios que **no** se pueden ejecutar (CA-1, CA-2 en pantalla, CA-3, CA-16,

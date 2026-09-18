@@ -71,6 +71,10 @@ cancelarReserva(estado, { id, codigo }, ahora)    -> { ok, estado, error, codigo
 **Total: 24 horas de equipo.** Ninguna tarea pasa de media jornada por persona, que es
 la regla dura número 2 del skill.
 
+**Estado al 2026-09-17.** T-1 a T-7 y T-10 cerradas y verificadas: `node producto/pruebas.js`
+da **23/23**. Quedan T-8 y T-9, que no son código — exigen una sesión nueva y un
+cronómetro.
+
 ### T-10 no estaba en el plan original
 
 Salió de releer `normalizarEstado` **después** de dar T-5 por terminada. La función
@@ -81,9 +85,14 @@ entere. La interfaz lo tapa, porque `buscarReserva` devuelve la primera que encu
 así que el error es invisible hasta que alguien cancela y reaparece la reserva
 duplicada.
 
-**Se deja pendiente a propósito.** Es la tarea con la que se va a probar `ejecutar-plan`
-de verdad en el grupo D de `docs/decisiones/pruebas_skills.md`: una tarea real, pequeña
+**Se dejó pendiente a propósito.** Era la tarea con la que se iba a probar `ejecutar-plan`
+de verdad en el grupo D.1 de `docs/decisiones/pruebas_skills.md`: una tarea real, pequeña
 y con criterio verificable, en vez de inventar una de mentira para la prueba.
+
+**Cerrada.** La ejecutó el skill con el protocolo completo: anunció la tarea y por qué
+esa, dijo qué archivos tocaría, esperó confirmación, verificó contra el criterio literal
+y se detuvo sin marcarla como hecha. El resultado, y lo que hizo de más sin que nadie se
+lo pidiera, están en `docs/decisiones/pruebas_skills.md`, grupo D.1.
 
 ## Orden y por qué
 
