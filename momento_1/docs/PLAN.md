@@ -1,6 +1,6 @@
 # PLAN — Sistema de reservas del laboratorio
 
-**Derivado de:** `docs/SPEC.md` v1.0
+**Derivado de:** `docs/SPEC.md` v1.1
 **Equipo:** Erick Albornoz · Frank Palma · Ana María Ruiz
 **Ventana real:** una semana, tres personas, con clase de por medio
 
@@ -66,7 +66,6 @@ cancelarReserva(estado, { id, codigo }, ahora)    -> { ok, estado, error, codigo
 | T-7 | Construir `pruebas.html`: corre la misma suite en el navegador y muestra el conteo | Los tres | 2 h | T-2 | CA-17: se abre con doble clic y muestra PASA/FALLA por caso |
 | T-8 | Revisión con contexto fresco: sesión nueva, que no vio cómo se construyó, contra los criterios de la spec | Los tres | 2 h | T-6, T-7 | Existe `docs/decisiones/revision_contexto_fresco.md` con los hallazgos, o con la declaración explícita de cero hallazgos |
 | T-9 | Ensayo cronometrado de la demo, con plan B | Los tres | 2 h | T-6, T-7 | El ensayo completo cabe en 6:00 medido con cronómetro, dos veces seguidas |
-
 | T-10 | Detectar reservas duplicadas en `normalizarEstado`: un estado guardado con dos reservas sobre el mismo puesto, la misma fecha y la misma franja debe cargar una sola | Los tres | 1 h | T-5 | El caso nuevo de `pruebas.js` pasa y el conteo total sube de 22 a 23 |
 
 **Total: 24 horas de equipo.** Ninguna tarea pasa de media jornada por persona, que es

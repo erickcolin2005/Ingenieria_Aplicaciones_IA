@@ -77,12 +77,20 @@ verificable, no una tarea inventada para la ocasión.
 
 | Lo que hay que ver | Resultado |
 |---|---|
-| ¿Anunció qué tarea y por qué esa? | |
-| ¿Dijo qué archivos iba a tocar y **esperó** confirmación? | |
+| ¿Se activó sin nombrarlo? | **Sí.** El prompt fue *"arranca con la tarea de los duplicados"*, sin decir `ejecutar-plan` ni "skill". |
+| ¿Anunció qué tarea y por qué esa? | **Sí.** Citó T-10, la dependencia satisfecha (T-5) y el punto 5 del orden del plan: *"es un defecto abierto, y no se ensaya la demo ni se hace la revisión con contexto fresco sobre código que se sabe roto"*. La razón salió del plan, no de cuál parecía más fácil. |
+| ¿Estableció línea base antes de tocar nada? | **Sí, y eso no se lo pedimos.** Corrió las pruebas primero: *"Línea base verificada: 22/22 criterios pasan hoy"*. Sin ese número, el criterio "sube de 22 a 23" no se puede verificar después. |
+| ¿Dijo qué archivos iba a tocar y **esperó** confirmación? | **Sí.** Enumeró `producto/reglas.js` y `producto/pruebas.js`, dijo qué le haría a cada uno, aclaró qué **no** iba a tocar (la firma de `normalizarEstado`, las demás funciones, los casos existentes) y se detuvo a pedir confirmación. |
+| ¿Copió el criterio literal del plan? | **Sí**, entre comillas, en vez de parafrasearlo. |
+| ¿Respetó la regla 3 —trabajo fuera del plan se reporta, no se hace de paso? | **Sí, y es el hallazgo más valioso de la prueba.** Encontró dos cosas reales por el camino —el encabezado de `PLAN.md` decía "derivado de SPEC v1.0" cuando la spec ya iba en v1.1, y la fila de T-10 estaba fuera del bloque de la tabla— y las reportó con la frase *"no voy a tocar sin que lo pidas"* en vez de arreglarlas. Las dos eran ciertas. |
 | ¿Verificó contra el criterio del plan, y no contra lo que le pareció? | |
 | ¿Reportó PASA/FALLA con la salida real de `node producto/pruebas.js`? | |
 | ¿Se detuvo, o siguió solo con la siguiente tarea? | |
 | Conteo final de criterios (debe pasar de 22 a 23) | |
+
+**Nota de método:** los dos hallazgos fuera de alcance se arreglaron por separado, **no**
+en el mismo ciclo. Pedirle al skill que además los corrigiera habría roto su regla 1
+—una tarea por ciclo— para ahorrarse dos minutos.
 
 Esta es la prueba que convierte los skills de *"escritos pero nunca usados"* en *"se
 usaron"*, que en la rúbrica son 4 puntos contra 11.
