@@ -28,13 +28,41 @@ escribir-spec", la descripción no sirve: nadie la va a nombrar en el uso real.
 
 | # | Qué se pide (pegar literal) | Qué debe pasar | ¿Se activó el correcto? | Notas |
 |---|---|---|---|---|
-| P-1 | *"Necesito dejar por escrito qué vamos a construir y cómo sabremos que quedó bien."* | Se carga `escribir-spec` | | |
+| # | Qué se pide (pegar literal) | Qué debe pasar | ¿Se activó el correcto? | Notas |
+|---|---|---|---|---|
+| P-1 | *"Necesito dejar por escrito qué vamos a construir y cómo sabremos que quedó bien."* | Se carga `escribir-spec` | **Sí** | Produjo `SPEC.md` v1.1. Detalle en el grupo B. |
 | P-2 | *"Ya tenemos claro qué hay que hacer. Organízalo en tareas con tiempos y dime por dónde empezar."* (sin dar nombres, para que además se vea si cumple la regla dura 7 y los pregunta) | Se carga `escribir-plan` **y pregunta los nombres antes de asignar nada** | | |
-| P-3 | *"Arranca con lo primero de la lista."* | Se carga `ejecutar-plan` | | |
-| P-4 | *"Explícame qué hace la función maximaCadena."* | **No se carga ninguno.** Los tres se tienen que quedar quietos ante una pregunta que no es su trabajo | | |
+| P-3 | *"Arranca con lo primero de la lista."* | Se carga `ejecutar-plan` | | Ver abajo: la respuesta fue correcta en contenido; falta confirmar si el skill se cargó o la sesión respondió sola. |
+| P-4 | *"Explícame qué hace la función maximaCadena."* | **No se carga ninguno.** Los tres se tienen que quedar quietos ante una pregunta que no es su trabajo | | Respondió con una explicación técnica normal, sin protocolo de skill. Falta confirmar en la transcripción. |
 
 **P-4 es la que más importa.** Un skill que se activa siempre es ruido: acaba
 cargándose para responder cualquier cosa y contamina la sesión.
+
+### Lo que sí quedó demostrado en P-3: sabe cuándo *no* puede
+
+Pedirle que arrancara con lo primero de la lista, con T-1 a T-7 y T-10 ya cerradas, deja
+como siguiente a **T-8, la revisión con contexto fresco**. Y respondió que **esa tarea no
+la puede hacer esta sesión**, citando el archivo y las líneas:
+
+> *"esta misma sesión —la que acaba de escribir T-10— no puede hacerla.
+> `docs/decisiones/revision_contexto_fresco.md:10-14` es explícito: pedirle a quien
+> construyó algo que lo critique es pedirle que se contradiga."*
+
+Es la misma familia de comportamiento que la regla dura 5 —*si no se puede verificar, se
+dice, no se declara cumplido*— aplicada a una tarea que sí podría haber fingido. Nada le
+impedía abrir los archivos, escribir cuatro "hallazgos" plausibles y llenar la tabla de
+`revision_contexto_fresco.md`. Habría quedado completa y habría sido mentira.
+
+También razonó el orden sin que se lo pidieran: T-9 después de T-8, porque *"no tiene
+sentido cronometrar una demo que todavía puede cambiar por lo que encuentre T-8"*.
+
+### Dato pendiente de confirmar
+
+En las dos corridas de arriba falta un solo dato: **si la herramienta cargó el skill o si
+la sesión respondió por su cuenta.** Se ve en la transcripción — aparece una invocación
+del skill por nombre. Sin ese dato, P-3 y P-4 quedan sin marcar: el contenido de las
+respuestas fue el correcto, pero estas dos pruebas miden **activación**, no contenido, y
+darlas por buenas sin verlo sería justamente lo que este documento no hace.
 
 ## Grupo B — El skill `escribir-spec`, medido dos veces
 
