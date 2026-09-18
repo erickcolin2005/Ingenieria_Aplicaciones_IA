@@ -68,12 +68,31 @@ cancelarReserva(estado, { id, codigo }, ahora)    -> { ok, estado, error, codigo
 | T-9 | Ensayo cronometrado de la demo, con plan B | Los tres | 2 h | T-6, T-7 | El ensayo completo cabe en 6:00 medido con cronómetro, dos veces seguidas |
 | T-10 | Detectar reservas duplicadas en `normalizarEstado`: un estado guardado con dos reservas sobre el mismo puesto, la misma fecha y la misma franja debe cargar una sola | Los tres | 1 h | T-5 | El caso nuevo de `pruebas.js` pasa y el conteo total sube de 22 a 23 |
 
-**Total: 24 horas de equipo.** Ninguna tarea pasa de media jornada por persona, que es
+| T-11 | Que el caso de CA-15 ejercite **los 14** códigos de `fallo()`, no 6 | Los tres | 1 h | spec v1.2 | El caso dispara los 14 códigos y sigue pasando; si a cualquiera de los 14 se le quita su explicación, el caso **falla** |
+| T-12 | `reservas.html` deja de duplicar reglas y números: las pistas se leen de `REGLAS`, y `pintar()` usa funciones de `reglas.js` para "es mía" (C-1) y "ya pasó" (R-5) | Los tres | 1 h | T-11 | No queda ningún número de la spec escrito a mano en `reservas.html`, ni ningún `if` con lógica de C-1 o R-5; la suite sigue pasando |
+| T-13 | Etiquetas honestas en `pruebas.js`: ningún título nombra un caso borde o criterio que el caso no verifica | Los tres | 30 min | spec v1.2 | Ningún título menciona CB-10 ni CA-2; los dos quedan marcados 👁 en la spec, con la razón |
+
+**Total: 26,5 horas de equipo.** Ninguna tarea pasa de media jornada por persona, que es
 la regla dura número 2 del skill.
 
-**Estado al 2026-09-17.** T-1 a T-7 y T-10 cerradas y verificadas: `node producto/pruebas.js`
-da **23/23**. Quedan T-8 y T-9, que no son código — exigen una sesión nueva y un
-cronómetro.
+**Estado al 2026-09-17.** T-1 a T-8 y T-10 cerradas y verificadas: `node producto/pruebas.js`
+da **23/23**.
+
+### T-11, T-12 y T-13 salen de la revisión con contexto fresco
+
+No las pensó nadie del equipo: son tres de los seis hallazgos de T-8, y ninguno se había
+visto en cuatro incrementos de construcción. Están en el plan y no arregladas en el
+momento porque el propio T-8 dice *"no arregles nada"*: quien revisa no decide qué se
+corrige.
+
+El orden importa. **T-11 y T-13 dependen de la spec, no del código**: el hallazgo 1 no es
+un defecto de los mensajes de error, es un criterio mal escrito —CA-15 dice "todo mensaje"
+cuando el código no tiene ninguna regla que citar para un puesto inexistente—, y los
+hallazgos 3 y 4 son etiquetas que prometen una verificación que no ocurre. Cambiar el
+código para que cuadre con un criterio mal escrito sería arreglar el síntoma. Primero se
+corrige la spec (v1.2), después el código la sigue.
+
+Detalle y verificación de los seis hallazgos: `docs/decisiones/revision_contexto_fresco.md`.
 
 ### T-10 no estaba en el plan original
 
@@ -110,7 +129,10 @@ lo pidiera, están en `docs/decisiones/pruebas_skills.md`, grupo D.1.
 6. **T-8 después de T-10, y en una sesión nueva.** Pedirle a la sesión que construyó algo
    que lo critique es pedirle que se contradiga; rara vez lo hace bien. Ese es el único
    sentido en el que la revisión "la hace otro": otro contexto, no otra persona.
-7. **T-9 el último día, no la noche anterior.**
+7. **T-11, T-13 y T-12 después de T-8**, en ese orden: T-11 y T-13 necesitan la spec
+   corregida primero; T-12 va después de T-11 para no tocar dos archivos a la vez.
+8. **T-9 el último día, no la noche anterior**, y después de T-11 a T-13: no se cronometra
+   una demo sobre código que se va a mover.
 
 ## Primera tarea
 
