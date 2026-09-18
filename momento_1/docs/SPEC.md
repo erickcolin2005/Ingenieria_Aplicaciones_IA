@@ -2,7 +2,7 @@
 
 **Equipo:** Erick Albornoz · Frank Palma · Ana María Ruiz
 **Caso:** A (aplicación HTML sin librerías ni servidor)
-**Versión:** 1.0 · 2026-09-17
+**Versión:** 1.1 · 2026-09-17 — v1.1 agrega R-8: una celda no puede cargar dos reservas
 
 ---
 
@@ -21,7 +21,7 @@ conexión a internet.
 |---|---|---|
 | O-1 | Ver de un vistazo qué está libre y qué está ocupado hoy | La cuadrícula muestra 20 puestos × 7 franjas con estado visible sin hacer clic |
 | O-2 | Reservar un puesto en una franja, identificándose con el código de estudiante | Una reserva creada aparece en la cuadrícula y sobrevive al cerrar y reabrir el archivo |
-| O-3 | Impedir que dos personas queden con el mismo puesto en la misma franja | El segundo intento sobre una celda ocupada se rechaza con mensaje |
+| O-3 | Impedir que dos personas queden con el mismo puesto en la misma franja | El segundo intento sobre una celda ocupada se rechaza con mensaje, y un estado guardado que ya tiene dos reservas sobre esa celda carga una sola |
 | O-4 | Hacer cumplir los límites de uso por persona sin que nadie los vigile | Los límites de 2 consecutivas y 3 diarias se rechazan automáticamente |
 | O-5 | Cancelar una reserva propia dentro del plazo permitido | Cancelar libera la celda; fuera de plazo se rechaza |
 | O-6 | Que cualquiera del curso pueda verificar que las reglas se cumplen | `producto/pruebas.html` ejecuta los criterios de aceptación y reporta PASA/FALLA |
@@ -94,6 +94,17 @@ agregamos un campo.
 | R-5 | No se reserva una franja cuyo inicio ya pasó | — |
 | R-6 | Código de estudiante | 6 a 10 dígitos, solo números |
 | R-7 | Puesto con equipo especializado (`P-19`, `P-20`) | Motivo ≥ 15 caracteres |
+| R-8 | Al **cargar** el estado guardado, una celda (puesto + fecha + franja) debe quedar con una sola reserva | Se conserva la primera que aparece en el arreglo; las siguientes se descartan |
+
+R-8 es la única regla de esta tabla que no rechaza una petición: no hay nadie pidiendo
+nada. R-1 impide crear la segunda reserva de una celda, pero solo actúa sobre lo que
+pasa por `validarReserva`. Un estado que ya llegó duplicado —escrito a mano, copiado
+entre máquinas, o producido por dos pestañas (CB-14)— entra sin pasar por ahí y rompe
+la invariante "una celda, una reserva" desde adentro. R-8 la restablece al cargar.
+
+El descarte es **silencioso**: `normalizarEstado` recibe el estado crudo y devuelve el
+estado saneado, nada más. Quien perdió la reserva no se entera. Es una pérdida de
+información real y está aceptada a conciencia: ver §7.
 
 ### 4.5 Reglas de cancelación
 
@@ -145,6 +156,7 @@ inválida".
 | CB-12 | Cancelar 30 minutos antes del inicio | Rechazo por C-2, indicando que debe hablar con el laboratorista. |
 | CB-13 | El archivo se deja abierto y cambia el día | El selector de fecha manda; la cuadrícula muestra la fecha seleccionada, no "hoy" cacheado. |
 | CB-14 | Dos pestañas del mismo navegador reservando a la vez | Gana la última que escribe. Declarado, no resuelto: sin servidor no hay forma de arbitrar. |
+| CB-15 | El estado guardado trae dos reservas sobre `P-07`, `2026-09-18`, franja `10` — **con códigos de estudiante distintos** | Se carga una sola, la primera del arreglo (R-8). La segunda se descarta sin aviso, aunque sea de otra persona. La comparación es por puesto + fecha + franja, **nunca por `id`**: un estado viejo puede traer `id` con otro formato (ver el ejemplo de §4.3) y dos reservas de la misma celda no compartirían identificador. |
 
 ## 6. Criterios de aceptación
 
@@ -170,6 +182,7 @@ los marcados con 👁 se verifican mirando la pantalla.
 | CA-15 | Todo mensaje de error nombra la regla violada; ninguno dice solo "error" | ✅ |
 | CA-16 | La pantalla advierte que el estado es local a ese navegador | 👁 |
 | CA-17 | `producto/pruebas.html` se abre con doble clic y muestra el conteo PASA/FALLA | 👁 |
+| CA-18 | Un estado guardado con dos reservas sobre el mismo puesto, fecha y franja carga exactamente una, y es la primera del arreglo | ✅ |
 
 ## 7. Decisiones
 
@@ -180,7 +193,16 @@ los marcados con 👁 se verifican mirando la pantalla.
 | Anticipación de 7 días | 30 días | Con 30 días la gente reserva "por si acaso" y no cancela; el laboratorio se ve lleno y está vacío. Siete días es un horizonte en el que la gente todavía sabe si va a ir. |
 | Cancelar hasta 60 minutos antes | Cancelar en cualquier momento | Cancelar a la hora exacta libera un puesto que nadie alcanza a tomar: el efecto real es evadir el registro de inasistencia. Una hora es el mínimo para que otra persona pueda enterarse y llegar. |
 | `P-19` y `P-20` diferenciados, exigiendo motivo escrito | Los 20 puestos iguales | Los dos puestos con GPU son escasos y se los lleva quien reserva más rápido, no quien los necesita. Pedir un motivo no impide el abuso — **el sistema no juzga el texto** — pero deja un rastro que el laboratorista puede revisar, y la fricción desalienta el "por si acaso". |
-| Reglas en un archivo aparte (`reglas.js`), como funciones puras | Todo dentro de `reservas.html` | Un solo archivo es más fácil de repartir, pero convierte cada criterio de aceptación en una verificación manual a punta de clics. Con las reglas separadas, 11 de 17 criterios se ejecutan solos. El costo: el producto son dos archivos que deben viajar juntos. |
+| Reglas en un archivo aparte (`reglas.js`), como funciones puras | Todo dentro de `reservas.html` | Un solo archivo es más fácil de repartir, pero convierte cada criterio de aceptación en una verificación manual a punta de clics. Con las reglas separadas, 13 de 18 criterios se ejecutan solos. El costo: el producto son dos archivos que deben viajar juntos. |
 | Cálculo de consecutivas sobre la cadena resultante | Contar solo vecinos inmediatos de la franja pedida | Contar vecinos deja pasar CB-4: reservar 6:00 y 10:00, luego 8:00, y quedar con tres seguidas. La regla debe evaluar el estado final, no el movimiento. |
 | Estado con `version` y normalización al cargar | Leer el JSON tal cual | El reto de la semana 3 avisó que los datos viejos no tienen los campos nuevos. Un producto que se rompe cuando agregas un campo es un producto que solo funciona la primera vez. |
 | Sin ningún modelo de lenguaje en el producto | Un asistente que interprete "necesito un puesto mañana en la tarde" | Ver `docs/PRUEBA_NECESIDAD.md`. Los seis ejes apuntan todos hacia código: entrada estructurada, reglas escribibles, exactitud obligatoria, costo del error alto. Un modelo aquí agrega latencia, costo y una probabilidad de equivocarse, a cambio de nada. |
+
+### Agregadas en v1.1 (R-8)
+
+| Decisión | Alternativa descartada | Por qué |
+|---|---|---|
+| De dos reservas sobre la misma celda, gana **la primera del arreglo** | (a) La de `creada` más antigua. (b) La última, por coherencia con CB-14. | (a) `creada` puede venir en `null`: el propio `normalizarEstado` lo acepta hoy, y §4.3 dice que un campo faltante no descarta la reserva. Ordenar por un campo que puede faltar exige una segunda regla para decidir los empates, y esa regla no la pidió nadie. (b) CB-14 habla de dos **escrituras** compitiendo, donde sí se sabe cuál llegó después. Al **cargar** no hay esa evidencia: el orden del arreglo no prueba orden temporal. Elegir "la primera" no es más justo — es el único criterio que produce siempre el mismo resultado con los datos que hay, y por eso es el único que se puede escribir como prueba. |
+| El descarte es **silencioso**: `normalizarEstado(crudo) -> estado`, sin conteo ni aviso | Devolver también cuántas se descartaron, y que `reservas.html` lo muestre en la línea de mensaje | Avisar es más honesto con quien pierde la reserva, y lo reconocemos. Pero la firma de `normalizarEstado` está fijada en el contrato de `docs/PLAN.md` y ya hay código escrito contra ella; cambiar la forma de retorno por esto obliga a tocar todas las llamadas para un mensaje que aparecería una vez y en un estado que solo se produce editando el JSON a mano. Queda como limitación conocida, igual que FA-4: declarada, no escondida. |
+| R-8 vive en **§4.4**, con las reglas de reserva | Declararla como invariante de carga en §4.3, junto a la normalización, y dejar §4.4 solo para reglas que rechazan peticiones | Conceptualmente §4.3 es su sitio: R-8 sanea datos, no rechaza a nadie. Pesó más la convención escrita del equipo —una regla del negocio son tres cosas: una entrada en §4.4, una rama en `reglas.js` y un caso en `pruebas.js`— porque es la que se usa para auditar si una regla está completa. Una regla que vive fuera de §4.4 es una regla que esa auditoría no encuentra. El costo queda pagado con el párrafo bajo la tabla, que dice explícitamente que R-8 no rechaza nada. |
+| Esta versión acota el encargo a R-8 y no reescribe la spec | Escribir una spec nueva desde cero, o auditar v1.0 completa | **El encargo original no decía qué especificar**: "dejar por escrito qué vamos a construir y cómo sabremos que quedó bien" es lo que v1.0 ya hacía. Se listan aquí las tres lecturas posibles porque la ambigüedad fue real: (a) spec nueva para otro trabajo, (b) auditoría de v1.0, (c) cerrar el hueco de T-10. Se eligió (c) porque T-10 era lo único que el equipo iba a construir sin tenerlo escrito: estaba en `docs/PLAN.md` y en ninguna de las tres partes que la convención exige. |
