@@ -1,13 +1,16 @@
 # Pruebas de la cadena de skills
 
-**Estado: MONTADAS, SIN EJECUTAR.** Las columnas de resultado están vacías a
-propósito. Todas estas pruebas exigen una **sesión nueva** —y una de ellas, la otra
-máquina— así que no se pueden ejecutar desde la sesión en la que se
-escribieron los skills: el resultado estaría contaminado por la conversación.
+**Estado al 2026-09-19: CORRIDAS, con una excepción declarada.** Grupos A, B, C, D
+(D.1 y D.2) y E están cerrados, cada uno en sesión nueva. La única prueba sin correr
+es **P-8** (requiere segunda máquina; no hubo tiempo ni equipo disponible antes de
+la demo — queda declarado, no escondido).
 
-**Antes de la demo hay que correrlas y llenar las tablas.** Se anota lo que pase,
-incluido lo que falle. Un skill que falló y se corrigió, con el registro del antes y
-el después, califica igual que uno que salió bien a la primera. Fingir, no.
+**No todo salió perfecto, y eso queda escrito tal cual:** P-7 (estabilidad de
+`escribir-plan`) falla su propio criterio de éxito — el número de tareas varió en 3,
+no en 1, y una corrida perdió por completo la tarea que conecta la lógica nueva a la
+interfaz. Es el resultado que se muestra en la demo si preguntan por debilidades: un
+skill que falló y quedó documentado, sin arreglar de apuro, califica igual que uno
+que salió bien a la primera. Fingir, no.
 
 ## Preparación
 
@@ -28,15 +31,39 @@ escribir-spec", la descripción no sirve: nadie la va a nombrar en el uso real.
 
 | # | Qué se pide (pegar literal) | Qué debe pasar | ¿Se activó el correcto? | Notas |
 |---|---|---|---|---|
-| # | Qué se pide (pegar literal) | Qué debe pasar | ¿Se activó el correcto? | Notas |
-|---|---|---|---|---|
 | P-1 | *"Necesito dejar por escrito qué vamos a construir y cómo sabremos que quedó bien."* | Se carga `escribir-spec` | **Sí** | Produjo `SPEC.md` v1.1. Detalle en el grupo B. |
-| P-2 | *"Ya tenemos claro qué hay que hacer. Organízalo en tareas con tiempos y dime por dónde empezar."* (sin dar nombres, para que además se vea si cumple la regla dura 7 y los pregunta) | Se carga `escribir-plan` **y pregunta los nombres antes de asignar nada** | | |
-| P-3 | *"Arranca con lo primero de la lista."* | Se carga `ejecutar-plan` | | Ver abajo: la respuesta fue correcta en contenido; falta confirmar si el skill se cargó o la sesión respondió sola. |
-| P-4 | *"Explícame qué hace la función maximaCadena."* | **No se carga ninguno.** Los tres se tienen que quedar quietos ante una pregunta que no es su trabajo | | Respondió con una explicación técnica normal, sin protocolo de skill. Falta confirmar en la transcripción. |
+| P-2 | *"Ya tenemos claro qué hay que hacer. Organízalo en tareas con tiempos y dime por dónde empezar."* (sin dar nombres, para que además se vea si cumple la regla dura 7 y los pregunta) | Se carga `escribir-plan` **y pregunta los nombres antes de asignar nada** | **Sí, y solo ese** | Ver abajo: no preguntó los nombres, y no es una falla de la regla 7. |
+| P-3 | *"Arranca con lo primero de la lista."* | Se carga `ejecutar-plan` | **Sí, confirmado** | La transcripción muestra la invocación explícita `Skill(ejecutar-plan) — Successfully loaded skill`, no la sesión respondiendo sola. Corrió `node producto/pruebas.js` (24/24) antes de anunciar nada, encontró la lista de tareas vacía (T-1 a T-13 cerradas) y **no fingió una tarea que ejecutar**. De paso reportó, sin tocarla, que la línea de estado de `PLAN.md` decía "pendiente de commitear" algo que ya estaba commiteado — regla dura 3 actuando de nuevo, igual que en T-10. Corregido en `PLAN.md`. |
+| P-4 | *"Explícame qué hace la función maximaCadena."* | **No se carga ninguno.** Los tres se tienen que quedar quietos ante una pregunta que no es su trabajo | **Sí, confirmado** | Ningún `Skill(...)` apareció en la transcripción. Respondió con una explicación técnica correcta de `maximaCadena` (`producto/reglas.js:184-195`), citando línea y el porqué de mirar la cadena resultante en vez de solo los vecinos (CB-4). |
+
+**Salvedad de P-3 y P-4, anotada por la propia sesión que las corrió:** no se ejecutaron
+en una sesión recién abierta, sino en la misma que acababa de correr P-2 y ya había
+leído `SPEC.md` y `PLAN.md` completos. No es una prueba de activación tan limpia como
+una sesión en blanco, y se deja escrito en vez de presentarla como si lo fuera.
 
 **P-4 es la que más importa.** Un skill que se activa siempre es ruido: acaba
 cargándose para responder cualquier cosa y contamina la sesión.
+
+### Lo que reveló P-2: la regla 7 no es "pregunta siempre", es "pregunta si falta"
+
+El skill cargó solo — una sola invocación, sin que otro skill se disputara el
+prompt — y con eso la mitad de P-2 pasa. La otra mitad no salió como estaba
+escrita: el skill **no preguntó los nombres**.
+
+La razón, en el paso 1 del propio skill ("lee la spec completa"): `docs/SPEC.md`
+ya trae el equipo en el encabezado, y `docs/PLAN.md` —que ya existe, derivado de
+esa spec, con T-1 a T-13 cerradas y 24/24 pasando— también. Los nombres no
+faltaban, así que preguntarlos habría sido teatro, no cumplimiento de la regla
+7. La regla dice *"el skill no asume nombres de personas: los solicita si
+faltan"* — el condicional importa. Los leyó de los documentos del proyecto, no
+los inventó y no los preguntó dos veces.
+
+Esto además destapó que P-2, tal como está redactada, asume un estado del
+repositorio (spec sin plan todavía) que ya no es el actual: el plan de este
+ciclo está cerrado. La sesión lo notó y, en vez de generar un plan nuevo sobre
+un ciclo que el propio `PLAN.md` dice terminado, se detuvo a preguntar qué
+hacía falta en realidad — la misma familia de comportamiento que en P-3: no
+fingir que hay algo que hacer cuando el estado real dice lo contrario.
 
 ### Lo que sí quedó demostrado en P-3: sabe cuándo *no* puede
 
@@ -56,14 +83,6 @@ impedía abrir los archivos, escribir cuatro "hallazgos" plausibles y llenar la 
 También razonó el orden sin que se lo pidieran: T-9 después de T-8, porque *"no tiene
 sentido cronometrar una demo que todavía puede cambiar por lo que encuentre T-8"*.
 
-### Dato pendiente de confirmar
-
-En las dos corridas de arriba falta un solo dato: **si la herramienta cargó el skill o si
-la sesión respondió por su cuenta.** Se ve en la transcripción — aparece una invocación
-del skill por nombre. Sin ese dato, P-3 y P-4 quedan sin marcar: el contenido de las
-respuestas fue el correcto, pero estas dos pruebas miden **activación**, no contenido, y
-darlas por buenas sin verlo sería justamente lo que este documento no hace.
-
 ## Grupo B — El skill `escribir-spec`
 
 **El "antes" no es medible.** El reto pide medirlo antes y después de redactar las
@@ -73,29 +92,57 @@ desde el principio. Nunca existió en el repo una versión con descripciones sue
 contra la cual comparar. Inventar un "antes" de memoria sería medir algo que no se
 midió. Queda declarado así, y se mide solo el "después", en una corrida real.
 
+**Cómo se midió "después":** no había transcripción guardada de P-1 (la corrida real
+que produjo `SPEC.md` v1.1), así que se hizo un ejercicio nuevo y comparable: pedirle
+a `escribir-spec`, en sesión nueva y sin nombrarlo, que especificara **reservas
+recurrentes** (FA-6) — scope real del proyecto, pero explícitamente fuera de Momento 1.
+Se le avisó que era un ejercicio y se le pidió guardar el resultado en
+`docs/SPEC_prueba_recurrentes.md`, no en `docs/SPEC.md`. Verificado con `git diff`:
+`docs/SPEC.md` real quedó sin ningún cambio.
+
 | Medición | Después (las tres descripciones escritas juntas) |
 |---|---|
-| ¿Se activó sin nombrarlo? | |
-| ¿Cuántas preguntas hizo antes de escribir? | |
-| ¿Qué decisiones abiertas detectó solo? (de las seis: franjas seguidas, franjas diarias, anticipación, inasistencia, plazo de cancelación, puestos diferenciados, mantenimiento) | |
-| ¿Rellenó alguna sección sin material? | |
+| ¿Se activó sin nombrarlo? | **Sí.** `Skill(escribir-spec) — Successfully loaded skill` en la transcripción. |
+| ¿Cuántas preguntas hizo antes de escribir? | **7**, en dos tandas. Primero 1 pregunta de alcance, sin que se le pidiera: notó que FA-6 ya declara esto fuera de Momento 1 y se detuvo a confirmar qué se le estaba pidiendo en realidad, en vez de escribir sobre una contradicción con la spec vigente. Ya autorizado el ejercicio, hizo 6 preguntas de diseño reales (ver fila siguiente) antes de escribir la primera línea de la spec. |
+| ¿Qué decisiones abiertas detectó solo? | 6, ninguna sugerida por quien pidió la spec: (1) cómo convive una recurrencia semanal con R-4 (horizonte de 7 días) — la serie cae fuera de la ventana el día 7; (2) qué pasa si una ocurrencia futura choca con otra reserva (R-1); (3) cómo se cancela una recurrente — serie completa u ocurrencia suelta; (4) si la serie tiene fecha de fin obligatoria o corre indefinida; (5), como repregunta sobre su propia respuesta 2, si "se salta esa semana" cubre también los rechazos por límites propios (R-2/R-3) o solo choques con otra persona; (6) si existe un máximo de duración además del fin obligatorio. |
+| ¿Rellenó alguna sección sin material? | **No**, según su autoevaluación de Fase 3 (checklist del propio skill), verificada: 7 secciones sin relleno, 5 entradas en "fuera de alcance" (mínimo pedido: 4) todas con razón, 13 criterios todos sí/no, 12 decisiones todas con alternativa descartada, cada objetivo con su criterio y viceversa. Documentó además, sin que se le pidiera, 3 micro-decisiones de diseño que tomó sin volver a preguntar (formato del `serieId`, qué cancela un `cancelarSerie`, cuándo se pide el motivo de P-19/P-20) — regla 8 del skill: toda ambigüedad se deja escrita aunque ya esté resuelta. |
+
+`docs/SPEC_prueba_recurrentes.md` queda como evidencia hasta la demo; se borra después
+(no es scope real, es el material de esta prueba).
 
 ## Grupo C — El skill `escribir-plan`, las cuatro pruebas del reto
 
 | # | Prueba | Cómo se hace | Éxito si… | Resultado |
 |---|---|---|---|---|
-| P-5 | Activación correcta | Pedir un reparto de trabajo sin nombrar el skill | Se carga solo | |
-| P-6 | No se activa de más | Pedir una especificación | Carga `escribir-spec`, no este | |
-| P-7 | Estabilidad | Correrlo **dos veces** sobre `docs/SPEC.md`, en sesiones distintas | Misma primera tarea · total de tareas con diferencia máxima de 1 · dependencias idénticas | |
-| P-8 | Usable por otros | Se corre en **la otra máquina**, sin que nadie explique nada. Es la única prueba en la que importa quién la ejecuta, y no porque el trabajo esté repartido: lo que se está probando es que el skill no dependa de la configuración de un computador | Funciona sin asistencia | |
+| P-5 | Activación correcta | Pedir un reparto de trabajo sin nombrar el skill | Se carga solo | **Sí.** Ya respondida por **P-2** (Grupo A): mismo tipo de prompt, `escribir-plan` cargó solo. No se repitió la sesión para no gastar dos corridas midiendo lo mismo. |
+| P-6 | No se activa de más | Pedir una especificación | Carga `escribir-spec`, no este | **Sí.** Ya respondida por la corrida del **Grupo B**: al pedir la spec de reservas recurrentes, la transcripción solo muestra `Skill(escribir-spec)`; `escribir-plan` no se disputó el prompt. |
+| P-7 | Estabilidad | Correrlo **dos veces** sobre `docs/SPEC_prueba_recurrentes.md` (sustituto de `docs/SPEC.md`, que ya tiene plan cerrado — ver nota abajo), en sesiones distintas | Misma primera tarea · total de tareas con diferencia máxima de 1 · dependencias idénticas | **Parcial. Falla el criterio de número de tareas.** Detalle abajo. |
+| P-8 | Usable por otros | Se corre en **la otra máquina**, sin que nadie explique nada | Funciona sin asistencia | **No se corrió.** No había una segunda máquina disponible y el tiempo no daba. Limitación real, declarada — no un hueco escondido. |
 
-Para P-7, anotar las dos corridas:
+**Nota sobre P-7:** `docs/SPEC.md` ya tiene un plan derivado y cerrado (T-1 a T-13,
+24/24), así que pedirle a `escribir-plan` que lo planifique de nuevo repite lo que
+pasó en P-2/P-3: encuentra el plan existente y se detiene a preguntar en vez de
+generar uno nuevo. Para medir estabilidad de verdad se usó `docs/SPEC_prueba_recurrentes.md`
+(la spec de práctica del Grupo B), que no tenía plan derivado todavía. En ambas
+corridas se le pidió guardar en `docs/PLAN_prueba_recurrentes.md`, nunca en
+`docs/PLAN.md` — confirmado con `git diff`, el plan real no se tocó en ninguna de
+las dos.
 
 | | Corrida 1 | Corrida 2 |
 |---|---|---|
-| Primera tarea | | |
-| Número de tareas | | |
-| ¿Dependencias iguales? | | |
+| Primera tarea | T-R1 — contrato de `reglas.js`: `crearSerie`, `materializarSeries`, `cancelarSerie` + `series: []`. No depende de nada. | T-R1 — mismo contrato, pero con 5 firmas en vez de 3 (agrega `agregarSerie` y `validarCancelacionSerie` como funciones propias). No depende de nada. |
+| Número de tareas | **10** (T-R1 a T-R10) | **7** (T-R1 a T-R7) |
+| ¿Dependencias iguales? | Igual familia de orden en las dos: contrato → pruebas → `normalizarEstado` → lógica de negocio → interfaz. **No son idénticas**: la Corrida 1 reparte la interfaz en 3 tareas encadenadas (T-R7 → T-R8 → T-R9: campo del formulario, marca visual, botones de cancelar) y tiene una tarea propia (T-R10) para conectar `materializarSeries` a la carga de `reservas.html`. La Corrida 2 junta todo el bloque de interfaz en una sola tarea (T-R7) — **y en esa fusión se perdió la tarea de conectar `materializarSeries` al cargar la página**. Nada en la Corrida 2 asigna quién llama esa función desde `reservas.html`; la lógica queda escrita (T-R5) pero no conectada. |
+
+**Veredicto de P-7: falla el criterio de número de tareas** (diferencia de 3, el
+límite era 1) **y hay una pérdida real de cobertura en la Corrida 2**, no solo una
+diferencia de estilo al agrupar: R-11 (auto-materializar al entrar en ventana, la
+decisión de diseño central del ejercicio) se queda sin tarea que la conecte a la
+interfaz. Si este plan de práctica se ejecutara tal cual, la Corrida 2 entregaría
+una app que nunca materializa reservas recurrentes solas — el criterio de
+aceptación asociado no se cumpliría, y ninguna tarea del plan lo habría cubierto.
+Vale la pena mostrar este hallazgo en la demo: es justo el tipo de falla honesta
+que la rúbrica premia más que tres pruebas que salen bien a la primera.
 
 ## Grupo D — El skill `ejecutar-plan`
 
@@ -173,17 +220,37 @@ docs/PLAN_prueba.md."*
 
 | Resultado | |
 |---|---|
-| ¿Qué respondió, literal? | |
-| ¿Declaró la tarea cumplida? | |
-| ¿Hubo que corregir el skill? ¿Qué se cambió? | |
+| ¿Qué respondió, literal? | Verificó la línea base (`node producto/pruebas.js` → 24/24) antes de tocar nada. Notó que R-1 a R-7 ya están implementadas y cubiertas por CA-4 a CA-11 — nada que escribir ahí. Copió el criterio literal entre comillas: *"20 personas reservan al tiempo sin conflictos"*. Respuesta clave: *"No puedo verificar este criterio con lo que hay disponible. El producto es una aplicación de una sola pestaña sobre localStorage, sin servidor ni mecanismo de concurrencia real [...] No existe manera de simular 20 personas operando al mismo tiempo sobre el mismo estado [...] Cualquier cosa que yo corra sería 20 llamadas secuenciales a agregarReserva, que es un experimento distinto del que el criterio describe."* Resultado declarado: **NO VERIFICABLE**. Cerró ofreciendo dos caminos —reescribir el criterio en una forma ejecutable, o aceptar que T-3 queda sin poder cerrarse con ese texto— sin elegir ninguno por su cuenta. |
+| ¿Declaró la tarea cumplida? | **No.** Cerró con *"No implementé nada nuevo ni marqué la tarea como hecha [...] DETENIDO. Esperando instrucción para la siguiente tarea."* |
+| ¿Hubo que corregir el skill? ¿Qué se cambió? | **No.** Pasó a la primera. `docs/PLAN_prueba.md` se borró después de la prueba — era material desechable, no entra al repositorio. |
+
+**Veredicto:** `ejecutar-plan` funciona también contra la prueba que más se falla.
+No confundió "el código relacionado ya existe" con "el criterio pedido está verificado"
+— distinción fina, y es justo la que separa marcar una tarea por lo que parece de
+marcarla por lo que el criterio literal exige.
 
 ## Grupo E — Coherencia desde sesión limpia
 
 | # | Prueba | Éxito si… | Resultado |
 |---|---|---|---|
-| P-9 | En una sesión nueva, sin explicar nada, pedir una pieza más del proyecto (por ejemplo, un caso de prueba para CB-13) | Sale en español, en ES5, con el reloj por parámetro y con un mensaje que nombra la regla — **sin que nadie se lo recuerde**. Eso prueba que la coherencia viene de `CLAUDE.md` y no de la conversación | |
+| P-9 | En una sesión nueva, sin explicar nada, pedir una pieza más del proyecto (por ejemplo, un caso de prueba para CB-13) | Sale en español, en ES5, con el reloj por parámetro y con un mensaje que nombra la regla — **sin que nadie se lo recuerde**. Eso prueba que la coherencia viene de `CLAUDE.md` y no de la conversación | **Mejor que lo pedido.** No escribió el caso — encontró, sin ayuda, que pedirlo era repetir el hallazgo 4 de T-8: CB-13 ("el selector manda") es comportamiento de `reservas.html`, no de `reglas.js`, y `pruebas.js` solo ejercita `reglas.js`. Lo verificó leyendo el código (`pintar()` lee `$fecha.value` fresco, `ahora()` llama a `new Date()` fresco, nada se cachea) antes de negarse a escribir un caso deshonesto. Propuso 4 caminos, recomendó el más conservador (documentar como CB-10, sin tocar `pruebas.js`) y, una vez confirmado, agregó la nota a `SPEC.md` con el mismo formato que la de CB-10. `node producto/pruebas.js` sigue en 24/24; no tocó `producto/`. |
+
+**Por qué esto es más valioso que el resultado esperado:** la coherencia que se pedía
+medir (español, ES5, reloj por parámetro) es de estilo. Lo que salió fue coherencia
+de **criterio**: una sesión que nunca vio la conversación de T-8 reconoció el mismo
+error que esa revisión encontró y ya corrigió, y se negó a repetirlo sin que nadie se
+lo señalara. Eso no sale de la conversación — sale de `SPEC.md` y
+`docs/decisiones/revision_contexto_fresco.md`, que es exactamente lo que P-9 quería
+probar.
 
 ## Para la demo
 
-De las pruebas de arriba, en la demo se muestra **la que falló**. Si ninguna falla,
-se muestra P-4 o P-6 —las de "no activarse de más"—, que son las que casi nadie prueba.
+**Se muestra P-7.** Es la que falló de verdad: `escribir-plan` no fue estable entre
+dos corridas sobre la misma spec — 10 tareas contra 7, y la segunda corrida perdió
+la tarea que conecta `materializarSeries` a `reservas.html`. Se cuenta así, con el
+número de tareas de cada corrida y el hallazgo de la tarea perdida, no como "salió
+todo bien". Segunda opción si hace falta una más: **D.2**, el criterio no
+verificable — `ejecutar-plan` distinguió "el código ya existe" de "el criterio pedido
+está verificado" y se detuvo sin fingir. Tercera, si preguntan por coherencia:
+**P-9** — una sesión nueva, sin ver la conversación de T-8, reconoció por su cuenta
+que escribir el caso pedido repetía un error que el equipo ya había corregido.
