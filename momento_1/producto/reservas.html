@@ -89,17 +89,17 @@
   <div class="campo">
     <label for="fecha">Día</label>
     <input type="date" id="fecha">
-    <span class="pista">Hoy y los 6 días siguientes</span>
+    <span class="pista" id="pistaFecha"></span>
   </div>
   <div class="campo">
     <label for="codigo">Tu código de estudiante</label>
     <input type="text" id="codigo" inputmode="numeric" maxlength="10" placeholder="123456" autocomplete="off">
-    <span class="pista">6 a 10 dígitos</span>
+    <span class="pista" id="pistaCodigo"></span>
   </div>
   <div class="campo">
     <label for="motivo">Motivo</label>
     <input type="text" id="motivo" maxlength="120" placeholder="¿Para qué necesitas la GPU?" autocomplete="off">
-    <span class="pista">Solo para P-19 y P-20 · mínimo 15 caracteres</span>
+    <span class="pista" id="pistaMotivo"></span>
   </div>
 </div>
 
@@ -196,9 +196,9 @@
         var td = document.createElement('td');
         var boton = document.createElement('button');
         var reserva = R.buscarReserva(estado, puesto, fecha, franja);
-        var pasada = R.inicioFranja(fecha, franja) <= momento;
+        var pasada = R.franjaYaPaso(fecha, franja, momento);   // R-5, un solo sitio
 
-        if (reserva && reserva.codigo === codigo && codigo) {
+        if (reserva && codigo && R.esDe(reserva, codigo)) {     // C-1, un solo sitio
           boton.className = 'propia';
           boton.textContent = 'Tuya';
           boton.title = 'Clic para cancelar' + (reserva.motivo ? ' · motivo: ' + reserva.motivo : '');
@@ -273,6 +273,17 @@
 
   // ----------------------------------------------------------------- inicio
 
+  /** Las pistas de la pantalla salen de REGLAS, no escritas a mano: si mañana R-4
+   *  pasa a 14 días, la pantalla lo dice sin que nadie se acuerde de editarla. */
+  function pintarPistas() {
+    document.getElementById('pistaFecha').textContent =
+      'Hoy y los ' + R.DIAS_ADELANTE + ' días siguientes';
+    document.getElementById('pistaCodigo').textContent =
+      R.CODIGO_MIN + ' a ' + R.CODIGO_MAX + ' dígitos';
+    document.getElementById('pistaMotivo').textContent =
+      'Solo para ' + R.PUESTOS_ESPECIALES.join(' y ') + ' · mínimo ' + R.MOTIVO_MINIMO + ' caracteres';
+  }
+
   (function iniciar() {
     var hoy = ahora();
     var tope = new Date(hoy.getTime() + R.DIAS_ADELANTE * 86400000);
@@ -280,6 +291,7 @@
     $fecha.min = R.fechaISO(hoy);
     $fecha.max = R.fechaISO(tope);
 
+    pintarPistas();
     cargar();
     pintarEncabezado();
     pintar();

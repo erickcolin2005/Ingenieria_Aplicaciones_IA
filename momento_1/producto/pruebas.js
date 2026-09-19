@@ -198,7 +198,10 @@
       return null;
     }},
 
-    { ca: 'CA-14', titulo: 'Un estado corrupto o vacío no rompe la aplicación (CB-10)', fn: function () {
+    // Ojo: esto NO es CB-10. CB-10 es que localStorage falle (lleno, deshabilitado,
+    // modo privado), y eso vive en reservas.html, no en reglas.js: desde aquí no se
+    // alcanza. Se verifica a ojo, abriendo la página en una ventana privada.
+    { ca: 'CA-14', titulo: 'Un estado corrupto o vacío no rompe la carga', fn: function () {
       var basura = [null, undefined, 'texto', 42, {}, { reservas: 'no es lista' },
                     { reservas: [null, { puesto: 'P-99' }, { puesto: 'P-01', fecha: 'ayer' }] }];
       for (var i = 0; i < basura.length; i++) {
@@ -236,26 +239,64 @@
       return null;
     }},
 
-    { ca: 'CA-15', titulo: 'Todo rechazo explica qué regla se violó', fn: function () {
-      var estado = conReservas([{ puesto: 'P-07', fecha: MANANA, franja: 14, codigo: '111111' }]);
-      var rechazos = [
-        R.validarReserva(estado, { puesto: 'P-07', fecha: MANANA, franja: 14, codigo: '222222' }, AHORA),
-        R.validarReserva(estado, { puesto: 'P-01', fecha: MANANA, franja: 10, codigo: '123' }, AHORA),
-        R.validarReserva(estado, { puesto: 'P-01', fecha: HOY, franja: 6, codigo: '111111' }, AHORA),
-        R.validarReserva(estado, { puesto: 'P-01', fecha: '2026-10-30', franja: 10, codigo: '111111' }, AHORA),
-        R.validarReserva(estado, { puesto: 'P-19', fecha: MANANA, franja: 10, codigo: '111111' }, AHORA),
-        R.validarCancelacion(estado, { id: R.idDeReserva('P-07', MANANA, 14), codigo: '222222' }, AHORA)
+    { ca: 'CA-15', titulo: 'Los 10 rechazos por violar una regla nombran la regla violada', fn: function () {
+      // Los diez. Antes este caso ejercitaba seis y pasaba en verde sin poder
+      // detectar los mensajes que no citan ninguna regla (hallazgo 2 de T-8).
+      var base = conReservas([{ puesto: 'P-07', fecha: MANANA, franja: 14, codigo: '111111' }]);
+      var tresDelDia = conReservas([
+        { puesto: 'P-01', fecha: MANANA, franja: 6, codigo: '444444' },
+        { puesto: 'P-02', fecha: MANANA, franja: 10, codigo: '444444' },
+        { puesto: 'P-03', fecha: MANANA, franja: 14, codigo: '444444' }
+      ]);
+      var dosSeguidas = conReservas([
+        { puesto: 'P-01', fecha: MANANA, franja: 12, codigo: '555555' },
+        { puesto: 'P-01', fecha: MANANA, franja: 14, codigo: '555555' }
+      ]);
+      var arrancaPronto = conReservas([{ puesto: 'P-03', fecha: HOY, franja: 10, codigo: '111111' }]);
+
+      var porRegla = [
+        ['E_OCUPADA',      R.validarReserva(base, { puesto: 'P-07', fecha: MANANA, franja: 14, codigo: '222222' }, AHORA)],
+        ['E_CODIGO',       R.validarReserva(base, { puesto: 'P-01', fecha: MANANA, franja: 10, codigo: '123' }, AHORA)],
+        ['E_PASADA',       R.validarReserva(base, { puesto: 'P-01', fecha: '2026-09-16', franja: 10, codigo: '111111' }, AHORA)],
+        ['E_ANTICIPACION', R.validarReserva(base, { puesto: 'P-01', fecha: '2026-10-30', franja: 10, codigo: '111111' }, AHORA)],
+        ['E_INICIADA',     R.validarReserva(base, { puesto: 'P-01', fecha: HOY, franja: 6, codigo: '111111' }, AHORA)],
+        ['E_MOTIVO',       R.validarReserva(base, { puesto: 'P-19', fecha: MANANA, franja: 10, codigo: '111111' }, AHORA)],
+        ['E_MAX_DIARIAS',  R.validarReserva(tresDelDia, { puesto: 'P-04', fecha: MANANA, franja: 18, codigo: '444444' }, AHORA)],
+        ['E_CONSECUTIVAS', R.validarReserva(dosSeguidas, { puesto: 'P-02', fecha: MANANA, franja: 16, codigo: '555555' }, AHORA)],
+        ['E_AJENA',        R.validarCancelacion(base, { id: R.idDeReserva('P-07', MANANA, 14), codigo: '222222' }, AHORA)],
+        ['E_PLAZO',        R.validarCancelacion(arrancaPronto, { id: R.idDeReserva('P-03', HOY, 10), codigo: '111111' }, AHORA)]
       ];
-      for (var i = 0; i < rechazos.length; i++) {
-        var m = rechazos[i].error;
-        if (!m || m.length < 20) return 'Hay un mensaje demasiado corto para explicar algo: "' + m + '"';
-        if (m.indexOf('Regla ') === -1) return 'El mensaje no nombra la regla violada: "' + m + '"';
-        if (!rechazos[i].codigoError) return 'Un rechazo llegó sin código de error.';
+
+      if (porRegla.length !== 10) return 'Se esperaban los 10 rechazos por regla y hay ' + porRegla.length + '.';
+      for (var i = 0; i < porRegla.length; i++) {
+        var esperado = porRegla[i][0], res = porRegla[i][1];
+        if (res.ok) return esperado + ': se esperaba un rechazo y fue aceptado.';
+        if (res.codigoError !== esperado) return 'Se esperaba ' + esperado + ' y llegó ' + res.codigoError + '.';
+        if (!/Regla (R-[1-8]|C-[1-3]):/.test(res.error)) return esperado + ' no nombra la regla violada: "' + res.error + '"';
       }
       return null;
     }},
 
-    { ca: 'CA-2', titulo: 'El dominio es de 20 puestos y 7 franjas de dos horas entre 6:00 y 20:00', fn: function () {
+    { ca: 'CA-19', titulo: 'Los 4 rechazos por dato inválido dicen qué dato está mal, sin inventar una regla', fn: function () {
+      var estado = conReservas([{ puesto: 'P-07', fecha: MANANA, franja: 14, codigo: '111111' }]);
+      var porDato = [
+        ['E_PUESTO',    R.validarReserva(estado, { puesto: 'P-99', fecha: MANANA, franja: 10, codigo: '111111' }, AHORA), 'P-01'],
+        ['E_FRANJA',    R.validarReserva(estado, { puesto: 'P-01', fecha: MANANA, franja: 7, codigo: '111111' }, AHORA), '6:00'],
+        ['E_FECHA',     R.validarReserva(estado, { puesto: 'P-01', fecha: 'ayer', franja: 10, codigo: '111111' }, AHORA), 'AAAA-MM-DD'],
+        ['E_NO_EXISTE', R.validarCancelacion(estado, { id: 'no-existe', codigo: '111111' }, AHORA), 'no existe']
+      ];
+      for (var i = 0; i < porDato.length; i++) {
+        var esperado = porDato[i][0], res = porDato[i][1], pista = porDato[i][2];
+        if (res.ok) return esperado + ': se esperaba un rechazo y fue aceptado.';
+        if (res.codigoError !== esperado) return 'Se esperaba ' + esperado + ' y llegó ' + res.codigoError + '.';
+        if (/Regla /.test(res.error)) return esperado + ' cita una regla que no existe para ese caso: "' + res.error + '"';
+        if (res.error.length < 20) return esperado + ' tiene un mensaje demasiado corto para explicar algo: "' + res.error + '"';
+        if (res.error.indexOf(pista) === -1) return esperado + ' no dice cuál sería el valor válido. Falta "' + pista + '" en: "' + res.error + '"';
+      }
+      return null;
+    }},
+
+    { ca: 'CA-20', titulo: 'El dominio que expone reglas.js son 20 puestos y 7 franjas de dos horas entre 6:00 y 20:00', fn: function () {
       if (R.PUESTOS.length !== 20) return 'Hay ' + R.PUESTOS.length + ' puestos, no 20.';
       if (R.PUESTOS[0] !== 'P-01' || R.PUESTOS[19] !== 'P-20') return 'Los puestos no van de P-01 a P-20.';
       if (R.FRANJAS.length !== 7) return 'Hay ' + R.FRANJAS.length + ' franjas, no 7.';

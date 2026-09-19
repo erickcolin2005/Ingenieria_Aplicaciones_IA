@@ -67,32 +67,34 @@ cancelarReserva(estado, { id, codigo }, ahora)    -> { ok, estado, error, codigo
 | T-8 | Revisión con contexto fresco: sesión nueva, que no vio cómo se construyó, contra los criterios de la spec | Los tres | 2 h | T-6, T-7 | Existe `docs/decisiones/revision_contexto_fresco.md` con los hallazgos, o con la declaración explícita de cero hallazgos |
 | T-9 | Ensayo cronometrado de la demo, con plan B | Los tres | 2 h | T-6, T-7 | El ensayo completo cabe en 6:00 medido con cronómetro, dos veces seguidas |
 | T-10 | Detectar reservas duplicadas en `normalizarEstado`: un estado guardado con dos reservas sobre el mismo puesto, la misma fecha y la misma franja debe cargar una sola | Los tres | 1 h | T-5 | El caso nuevo de `pruebas.js` pasa y el conteo total sube de 22 a 23 |
-
-| T-11 | Que el caso de CA-15 ejercite **los 14** códigos de `fallo()`, no 6 | Los tres | 1 h | spec v1.2 | El caso dispara los 14 códigos y sigue pasando; si a cualquiera de los 14 se le quita su explicación, el caso **falla** |
+| T-11 | Partir CA-15 en CA-15 (rechazo por regla, cita la regla) y CA-19 (rechazo por dato inválido, no cita ninguna), y que el caso ejercite **los 14** códigos de `fallo()`, no 6 | Los tres | 1 h | spec v1.2 | El caso de CA-15 dispara los 10 códigos por regla y el de CA-19 los 4 por dato; si a cualquiera de los 14 se le quita su explicación, el caso correspondiente **falla** |
 | T-12 | `reservas.html` deja de duplicar reglas y números: las pistas se leen de `REGLAS`, y `pintar()` usa funciones de `reglas.js` para "es mía" (C-1) y "ya pasó" (R-5) | Los tres | 1 h | T-11 | No queda ningún número de la spec escrito a mano en `reservas.html`, ni ningún `if` con lógica de C-1 o R-5; la suite sigue pasando |
 | T-13 | Etiquetas honestas en `pruebas.js`: ningún título nombra un caso borde o criterio que el caso no verifica | Los tres | 30 min | spec v1.2 | Ningún título menciona CB-10 ni CA-2; los dos quedan marcados 👁 en la spec, con la razón |
 
 **Total: 26,5 horas de equipo.** Ninguna tarea pasa de media jornada por persona, que es
 la regla dura número 2 del skill.
 
-**Estado al 2026-09-17.** T-1 a T-8 y T-10 cerradas y verificadas: `node producto/pruebas.js`
-da **23/23**.
+**Estado al 2026-09-19.** T-1 a T-13 cerradas y verificadas: `node producto/pruebas.js`
+da **24/24**. El código de T-11 a T-13 y la spec v1.2 que lo respalda están escritos y
+verificados; pendientes de commitear (el equipo lo confirma antes del push, según
+`docs/POLITICA_PERMISOS.md`).
 
-### T-11, T-12 y T-13 salen de la revisión con contexto fresco
+### T-11, T-12 y T-13 salieron de la revisión con contexto fresco
 
-No las pensó nadie del equipo: son tres de los seis hallazgos de T-8, y ninguno se había
-visto en cuatro incrementos de construcción. Están en el plan y no arregladas en el
+No las pensó nadie del equipo: son los seis hallazgos de T-8, y ninguno se había
+visto en cuatro incrementos de construcción. Quedaron en el plan y sin arreglar en el
 momento porque el propio T-8 dice *"no arregles nada"*: quien revisa no decide qué se
 corrige.
 
-El orden importa. **T-11 y T-13 dependen de la spec, no del código**: el hallazgo 1 no es
-un defecto de los mensajes de error, es un criterio mal escrito —CA-15 dice "todo mensaje"
-cuando el código no tiene ninguna regla que citar para un puesto inexistente—, y los
-hallazgos 3 y 4 son etiquetas que prometen una verificación que no ocurre. Cambiar el
-código para que cuadre con un criterio mal escrito sería arreglar el síntoma. Primero se
-corrige la spec (v1.2), después el código la sigue.
+El orden importó. **T-11 y T-13 dependían de la spec, no del código**: el hallazgo 1 no
+era un defecto de los mensajes de error, sino un criterio mal escrito —CA-15 decía "todo
+mensaje" cuando el código no tiene ninguna regla que citar para un puesto inexistente—, y
+los hallazgos 3 y 4 eran etiquetas que prometían una verificación que no ocurría. Cambiar
+el código para que cuadrara con un criterio mal escrito habría sido arreglar el síntoma.
+Se corrigió la spec primero (v1.2), y el código la siguió después, en el mismo ciclo.
 
-Detalle y verificación de los seis hallazgos: `docs/decisiones/revision_contexto_fresco.md`.
+Detalle, verificación de los seis hallazgos y qué se hizo con cada uno:
+`docs/decisiones/revision_contexto_fresco.md`.
 
 ### T-10 no estaba en el plan original
 

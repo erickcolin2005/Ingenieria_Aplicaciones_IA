@@ -22,6 +22,12 @@ var MAX_DIARIAS = 3;        // R-3
 var DIAS_ADELANTE = 6;      // R-4: hoy + 6 = siete días en total
 var MINUTOS_CANCELACION = 60; // C-2
 var MOTIVO_MINIMO = 15;     // R-7
+var CODIGO_MIN = 6;         // R-6
+var CODIGO_MAX = 10;        // R-6
+
+// Se arma con las constantes para que el límite viva en un solo sitio: si cambia
+// R-6, cambia arriba y lo siguen la validación, el mensaje de error y la pantalla.
+var RE_CODIGO = new RegExp('^\\d{' + CODIGO_MIN + ',' + CODIGO_MAX + '}$');
 
 var PUESTOS = (function () {
   var lista = [];
@@ -124,7 +130,7 @@ function normalizarEstado(crudo) {
     if (PUESTOS.indexOf(r.puesto) === -1) continue;
     if (FRANJAS.indexOf(Number(r.franja)) === -1) continue;
     if (!esFechaValida(r.fecha)) continue;
-    if (typeof r.codigo !== 'string' || !/^\d{6,10}$/.test(r.codigo)) continue;
+    if (typeof r.codigo !== 'string' || !RE_CODIGO.test(r.codigo)) continue;
 
     // R-8: la celda ya la tomó una reserva anterior del arreglo.
     var clave = claveCelda(r.puesto, r.fecha, Number(r.franja));
@@ -142,6 +148,20 @@ function normalizarEstado(crudo) {
     });
   }
   return estado;
+}
+
+/** C-1: ¿esta reserva es de quien dice ser? Existe para que la interfaz no compare
+ *  códigos por su cuenta: si el criterio de identidad cambia, cambia aquí y en un
+ *  solo sitio. */
+function esDe(reserva, codigo) {
+  if (!reserva || typeof codigo !== 'string') return false;
+  return reserva.codigo === codigo.trim();
+}
+
+/** R-5: ¿la franja ya empezó? Mismo criterio exacto que usa `validarReserva`, para
+ *  que la pantalla no pueda decir "libre" sobre algo que la regla rechaza. */
+function franjaYaPaso(fechaTexto, franja, ahora) {
+  return inicioFranja(fechaTexto, franja) <= ahora;
 }
 
 function reservasDe(estado, codigo, fechaTexto) {
@@ -198,8 +218,8 @@ function validarReserva(estado, datos, ahora) {
     return fallo('E_FECHA', 'La fecha "' + fecha + '" no es válida. Debe tener el formato AAAA-MM-DD.');
   }
   // R-6 antes que todo lo demás (CB-7): sin identidad no hay nada que validar.
-  if (!/^\d{6,10}$/.test(codigo)) {
-    return fallo('E_CODIGO', 'Regla R-6: el código de estudiante debe tener entre 6 y 10 dígitos, solo números.');
+  if (!RE_CODIGO.test(codigo)) {
+    return fallo('E_CODIGO', 'Regla R-6: el código de estudiante debe tener entre ' + CODIGO_MIN + ' y ' + CODIGO_MAX + ' dígitos, solo números.');
   }
 
   var dias = diasDesdeHoy(fecha, ahora);
@@ -209,7 +229,7 @@ function validarReserva(estado, datos, ahora) {
   if (dias > DIAS_ADELANTE) {
     return fallo('E_ANTICIPACION', 'Regla R-4: solo se reserva hoy y los ' + DIAS_ADELANTE + ' días siguientes. Esa fecha está a ' + dias + ' días.');
   }
-  if (inicioFranja(fecha, franja) <= ahora) {
+  if (franjaYaPaso(fecha, franja, ahora)) {
     return fallo('E_INICIADA', 'Regla R-5: la franja ' + etiquetaFranja(franja) + ' ya empezó.');
   }
   // R-7
@@ -275,7 +295,7 @@ function validarCancelacion(estado, datos, ahora) {
     return fallo('E_NO_EXISTE', 'Esa reserva no existe.');
   }
   // C-1
-  if (reserva.codigo !== codigo) {
+  if (!esDe(reserva, codigo)) {
     return fallo('E_AJENA', 'Regla C-1: esa reserva es de otra persona. Solo la cancela quien la hizo.');
   }
   // C-2
@@ -310,6 +330,7 @@ var REGLAS = {
   PUESTOS_ESPECIALES: PUESTOS_ESPECIALES, MAX_CONSECUTIVAS: MAX_CONSECUTIVAS,
   MAX_DIARIAS: MAX_DIARIAS, DIAS_ADELANTE: DIAS_ADELANTE,
   MINUTOS_CANCELACION: MINUTOS_CANCELACION, MOTIVO_MINIMO: MOTIVO_MINIMO,
+  CODIGO_MIN: CODIGO_MIN, CODIGO_MAX: CODIGO_MAX,
   // contrato (docs/PLAN.md)
   crearEstado: crearEstado,
   normalizarEstado: normalizarEstado,
@@ -320,7 +341,9 @@ var REGLAS = {
   // auxiliares que la interfaz necesita
   fechaISO: fechaISO, etiquetaFranja: etiquetaFranja, inicioFranja: inicioFranja,
   esPuestoEspecial: esPuestoEspecial, buscarReserva: buscarReserva,
-  diasDesdeHoy: diasDesdeHoy, idDeReserva: idDeReserva
+  diasDesdeHoy: diasDesdeHoy, idDeReserva: idDeReserva,
+  // la interfaz las usa para no reimplementar C-1 ni R-5
+  esDe: esDe, franjaYaPaso: franjaYaPaso
 };
 
 if (typeof module !== 'undefined' && module.exports) {

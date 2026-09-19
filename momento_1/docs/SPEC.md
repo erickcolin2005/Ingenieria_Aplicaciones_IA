@@ -2,7 +2,11 @@
 
 **Equipo:** Erick Albornoz · Frank Palma · Ana María Ruiz
 **Caso:** A (aplicación HTML sin librerías ni servidor)
-**Versión:** 1.1 · 2026-09-17 — v1.1 agrega R-8: una celda no puede cargar dos reservas
+**Versión:** 1.2 · 2026-09-19 — v1.1 agrega R-8: una celda no puede cargar dos reservas.
+v1.2 corrige tres criterios mal escritos, encontrados por la revisión con contexto
+fresco de T-8 (`docs/decisiones/revision_contexto_fresco.md`): CA-15 prometía más de
+lo que verificaba, y una prueba llevaba la etiqueta de CA-2 sin ser CA-2. Ningún
+objetivo ni regla de negocio cambia; solo lo que decían los criterios sobre sí mismos.
 
 ---
 
@@ -158,6 +162,11 @@ inválida".
 | CB-14 | Dos pestañas del mismo navegador reservando a la vez | Gana la última que escribe. Declarado, no resuelto: sin servidor no hay forma de arbitrar. |
 | CB-15 | El estado guardado trae dos reservas sobre `P-07`, `2026-09-18`, franja `10` — **con códigos de estudiante distintos** | Se carga una sola, la primera del arreglo (R-8). La segunda se descarta sin aviso, aunque sea de otra persona. La comparación es por puesto + fecha + franja, **nunca por `id`**: un estado viejo puede traer `id` con otro formato (ver el ejemplo de §4.3) y dos reservas de la misma celda no compartirían identificador. |
 
+CB-10 no tiene caso en `pruebas.js` y no lo va a tener: depende de que `localStorage`
+falle, y eso solo ocurre en `reservas.html`, que corre en un navegador. `reglas.js`
+—lo único que `pruebas.js` ejercita— no toca `localStorage` a propósito (§4.1). Se
+verifica 👁, abriendo el archivo en una ventana privada.
+
 ## 6. Criterios de aceptación
 
 Cada uno se responde sí o no. Los marcados con ✅ los ejecuta `producto/pruebas.html`;
@@ -179,10 +188,12 @@ los marcados con 👁 se verifican mirando la pantalla.
 | CA-12 | Cancelar con código distinto al de la reserva se rechaza | ✅ |
 | CA-13 | Cancelar a menos de 60 minutos del inicio se rechaza | ✅ |
 | CA-14 | Un estado guardado sin el campo `motivo` se carga sin perder reservas | ✅ |
-| CA-15 | Todo mensaje de error nombra la regla violada; ninguno dice solo "error" | ✅ |
+| CA-15 | Los 10 rechazos por violar una regla de negocio (R-1…R-8, C-1…C-3) nombran la regla violada | ✅ |
 | CA-16 | La pantalla advierte que el estado es local a ese navegador | 👁 |
 | CA-17 | `producto/pruebas.html` se abre con doble clic y muestra el conteo PASA/FALLA | 👁 |
 | CA-18 | Un estado guardado con dos reservas sobre el mismo puesto, fecha y franja carga exactamente una, y es la primera del arreglo | ✅ |
+| CA-19 | Los 4 rechazos por dato inválido (puesto, franja o fecha que no existen; reserva que no existe) dicen qué dato está mal, sin citar una regla que no aplica | ✅ |
+| CA-20 | El dominio que expone `reglas.js` son 20 puestos (`P-01`…`P-20`) y 7 franjas de dos horas entre 6:00 y 20:00 | ✅ |
 
 ## 7. Decisiones
 
@@ -206,3 +217,12 @@ los marcados con 👁 se verifican mirando la pantalla.
 | El descarte es **silencioso**: `normalizarEstado(crudo) -> estado`, sin conteo ni aviso | Devolver también cuántas se descartaron, y que `reservas.html` lo muestre en la línea de mensaje | Avisar es más honesto con quien pierde la reserva, y lo reconocemos. Pero la firma de `normalizarEstado` está fijada en el contrato de `docs/PLAN.md` y ya hay código escrito contra ella; cambiar la forma de retorno por esto obliga a tocar todas las llamadas para un mensaje que aparecería una vez y en un estado que solo se produce editando el JSON a mano. Queda como limitación conocida, igual que FA-4: declarada, no escondida. |
 | R-8 vive en **§4.4**, con las reglas de reserva | Declararla como invariante de carga en §4.3, junto a la normalización, y dejar §4.4 solo para reglas que rechazan peticiones | Conceptualmente §4.3 es su sitio: R-8 sanea datos, no rechaza a nadie. Pesó más la convención escrita del equipo —una regla del negocio son tres cosas: una entrada en §4.4, una rama en `reglas.js` y un caso en `pruebas.js`— porque es la que se usa para auditar si una regla está completa. Una regla que vive fuera de §4.4 es una regla que esa auditoría no encuentra. El costo queda pagado con el párrafo bajo la tabla, que dice explícitamente que R-8 no rechaza nada. |
 | Esta versión acota el encargo a R-8 y no reescribe la spec | Escribir una spec nueva desde cero, o auditar v1.0 completa | **El encargo original no decía qué especificar**: "dejar por escrito qué vamos a construir y cómo sabremos que quedó bien" es lo que v1.0 ya hacía. Se listan aquí las tres lecturas posibles porque la ambigüedad fue real: (a) spec nueva para otro trabajo, (b) auditoría de v1.0, (c) cerrar el hueco de T-10. Se eligió (c) porque T-10 era lo único que el equipo iba a construir sin tenerlo escrito: estaba en `docs/PLAN.md` y en ninguna de las tres partes que la convención exige. |
+
+### Agregadas en v1.2 (T-11 a T-13, sobre los seis hallazgos de T-8)
+
+| Decisión | Alternativa descartada | Por qué |
+|---|---|---|
+| Partir el criterio en dos: CA-15 (rechazo por regla, cita la regla) y CA-19 (rechazo por dato inválido, no cita ninguna) | Dejar un solo CA-15 que dijera "todo mensaje de error" | El hallazgo 2 de T-8 fue exacto: con un solo criterio, el caso de prueba ejercitaba 6 de 14 códigos y pasaba en verde sin poder detectar que 4 de ellos (`E_PUESTO`, `E_FRANJA`, `E_FECHA`, `E_NO_EXISTE`) no citan ninguna regla — porque no incumplen ninguna, incumplen un dato. Forzarlos a citar una regla inventada habría sido peor que separarlos: no existe una R-9 que diga "el puesto debe existir". |
+| Crear CA-20 para la prueba que valida las constantes del dominio (20 puestos, 7 franjas), y dejar CA-2 como estaba (👁, verificación visual de la cuadrícula) | Cambiar CA-2 para que apunte al caso automatizado que ya existía | El hallazgo 4 fue que el caso llevaba la etiqueta "CA-2" sin verificar CA-2: probaba `R.PUESTOS.length` y `R.FRANJAS.length`, no que la cuadrícula se pinte con 20 filas y 7 columnas. Lo que el caso sí prueba vale la pena conservarlo, pero con su propio número. CA-2 sigue siendo 👁 porque nadie escribió todavía una forma de verificar el DOM renderizado desde `pruebas.js`, y fingir que sí se puede es exactamente lo que este documento no hace. |
+| Declarar CB-10 verificable solo 👁, con la razón escrita bajo la tabla de §5 | Simular `localStorage` en Node para poder automatizarlo | El hallazgo 3 mostró que el caso etiquetado "(CB-10)" probaba otra cosa (basura en el JSON), y que CB-10 real —`localStorage` lleno o en modo privado— no es alcanzable desde `reglas.js`, que nunca toca `localStorage` a propósito (§4.1, para poder correr en Node). Montar un mock de `localStorage` solo para este caso agrega una dependencia de prueba a un archivo que hoy no tiene ninguna, por un caso borde que se verifica en dos minutos abriendo una ventana privada. |
+| `reservas.html` deja de comparar `reserva.codigo === codigo` (C-1) y `inicioFranja(...) <= momento` (R-5) por su cuenta, y llama a `R.esDe` y `R.franjaYaPaso` | Dejarlo como estaba, documentado como riesgo conocido | Los hallazgos 5 y 6 no eran una regla mal implementada — coincidían con la spec hoy — sino la reimplementación que `docs/decisiones/loop.md` ya había prohibido explícitamente en el incremento 3 ("la interfaz no reimplementa ninguna regla"). Corregirlo no cambia ningún criterio de aceptación; hace que uno que ya pasaba deje de poder romperse en silencio si `reglas.js` cambia. |
