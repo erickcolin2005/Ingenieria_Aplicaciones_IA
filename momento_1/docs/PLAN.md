@@ -1,30 +1,36 @@
 # PLAN — Sistema de reservas del laboratorio
 
 **Derivado de:** `docs/SPEC.md` v1.1
-**Equipo:** Erick Albornoz · Frank Palma · Ana María Ruiz
-**Ventana real:** una semana, tres personas, con clase de por medio
+**Equipo:** Erick Albornoz · Frank Palma (Ana María Ruiz se retiró antes de la demo —
+ver `docs/decisiones/cambio_equipo.md`; las tareas T-1 a T-13 se hicieron con las
+tres personas y la columna "Quién" de abajo lo conserva así)
+**Ventana real:** una semana, dos personas de cara a la demo, con clase de por medio
 
 Este plan no repite la spec. Cada tarea apunta al criterio de aceptación que la
 cierra; lo que ese criterio significa está en la spec y no se copia aquí.
 
 ## Cómo repartimos el trabajo: no lo repartimos
 
-**Las tres personas trabajan sobre todas las tareas.** No hay tareas de Erick, de Frank
-ni de Ana María: la columna "Quién" dice *los tres* en todas, y eso es una decisión, no
-una falta de organización.
+**Así se construyó** (T-1 a T-13, con Erick Albornoz, Frank Palma y Ana María Ruiz,
+antes de que Ana se retirara — ver `docs/decisiones/cambio_equipo.md`). La razón de
+fondo no depende de cuántos sean, y por eso sigue aplicando tal cual para las dos
+personas que sustentan: **todos trabajan sobre todas las tareas.** No hay tareas de
+Erick ni de Frank por separado: la columna "Quién" dice *los tres* porque así fue, y
+eso fue una decisión, no una falta de organización.
 
 La razón es la sustentación. La rúbrica dice que el evaluador señala una función **al
 azar** y pregunta *"explíquenme qué hace"*, y que la peor respuesta posible es "lo hizo
 la IA" — pero la segunda peor es "esa parte la hizo otro". Un reparto por módulos
-produce exactamente eso: tres personas que dominan un tercio cada una y un equipo que no
-domina nada completo.
+produce exactamente eso: cada persona domina una fracción y un equipo que no domina
+nada completo. Con dos personas la razón pesa más, no menos: no queda un tercero que
+salve la pregunta que ninguno de los dos sepa responder.
 
-El costo es real y lo asumimos: en paralelo se avanzaría bastante más rápido, y con tres
-personas el desperdicio es mayor que con dos. A cambio, cualquiera de los tres puede
-defender cualquier línea del repositorio, y la demo no se cae si alguien falta el día de
-la presentación.
+El costo es real y se asumió: en paralelo se avanza más rápido, y repartir en partes
+iguales siempre es más eficiente que hacerlo todo entre todos. A cambio, cualquiera
+puede defender cualquier línea del repositorio, y la demo no se cae si alguien falta
+el día de la presentación.
 
-**Cómo se ejecuta en la práctica:** una tarea a la vez, los tres mirando la misma
+**Cómo se ejecutó en la práctica (T-1 a T-13):** una tarea a la vez, los tres mirando la misma
 pantalla. Quien escribe va rotando por tarea, de modo que a nadie le toque siempre el
 teclado ni siempre mirar. Quien no escribe hace de revisor en el momento, que es el
 paso 4 del loop hecho en caliente.
@@ -74,10 +80,10 @@ cancelarReserva(estado, { id, codigo }, ahora)    -> { ok, estado, error, codigo
 **Total: 26,5 horas de equipo.** Ninguna tarea pasa de media jornada por persona, que es
 la regla dura número 2 del skill.
 
-**Estado al 2026-09-19.** T-1 a T-13 cerradas y verificadas: `node producto/pruebas.js`
-da **24/24**. El código de T-11 a T-13 y la spec v1.2 que lo respalda están escritos y
-verificados; pendientes de commitear (el equipo lo confirma antes del push, según
-`docs/POLITICA_PERMISOS.md`).
+**Estado al 2026-09-19.** T-1 a T-13 cerradas, verificadas y commiteadas: `node
+producto/pruebas.js` da **24/24**. No queda ninguna tarea abierta en este ciclo —
+confirmado por `ejecutar-plan` en la prueba P-3 de `docs/decisiones/pruebas_skills.md`,
+que corrió la suite antes de anunciar nada y encontró la lista vacía.
 
 ### T-11, T-12 y T-13 salieron de la revisión con contexto fresco
 
@@ -162,6 +168,6 @@ Preguntado y respondido antes de ejecutar, no asumido en silencio:
 | Pregunta | Respuesta acordada |
 |---|---|
 | ¿`reglas.js` tiene que correr en Node, o solo en el navegador? | En los dos. En el navegador para `pruebas.html` (CA-17), en Node para poder verificar en la terminal sin abrir nada. Se resuelve con un bloque de compatibilidad al final del archivo. |
-| Si las tres personas trabajan sobre todo, ¿quién decide cuando no hay acuerdo? | Decide la spec. Si la spec no lo dice, se para y se agrega a la spec antes de seguir: es la regla dura 10 del skill `ejecutar-plan`. No se vota: tres personas y una votación es la forma más rápida de cerrar una discusión sin resolverla. |
+| Si todos trabajan sobre todo, ¿quién decide cuando no hay acuerdo? | Decide la spec. Si la spec no lo dice, se para y se agrega a la spec antes de seguir: es la regla dura 10 del skill `ejecutar-plan`. No se vota: con dos personas una votación empata, y un empate es la forma más rápida de cerrar una discusión sin resolverla. |
 | ¿Qué pasa si T-3 no termina el día previsto? | T-6 se hace contra el contrato con reglas incompletas. La interfaz no se bloquea por la lógica. |
 | ¿Qué se muestra en la demo si nada funciona? | El plan B de `docs/DEMO.md`. Definido antes, no improvisado ese día. |

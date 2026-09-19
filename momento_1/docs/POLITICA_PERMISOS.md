@@ -1,6 +1,6 @@
 # Política de permisos del equipo
 
-**Equipo:** Erick Albornoz · Frank Palma · Ana María Ruiz
+**Equipo:** Erick Albornoz · Frank Palma
 **Aplicada en:** `.claude/settings.json` (no es un documento decorativo: las reglas
 de esta tabla están escritas en ese archivo y la herramienta las obedece).
 

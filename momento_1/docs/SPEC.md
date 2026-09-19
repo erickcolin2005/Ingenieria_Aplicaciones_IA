@@ -1,6 +1,6 @@
 # SPEC — Sistema de reservas del laboratorio
 
-**Equipo:** Erick Albornoz · Frank Palma · Ana María Ruiz
+**Equipo:** Erick Albornoz · Frank Palma
 **Caso:** A (aplicación HTML sin librerías ni servidor)
 **Versión:** 1.2 · 2026-09-19 — v1.1 agrega R-8: una celda no puede cargar dos reservas.
 v1.2 corrige tres criterios mal escritos, encontrados por la revisión con contexto
@@ -166,6 +166,14 @@ CB-10 no tiene caso en `pruebas.js` y no lo va a tener: depende de que `localSto
 falle, y eso solo ocurre en `reservas.html`, que corre en un navegador. `reglas.js`
 —lo único que `pruebas.js` ejercita— no toca `localStorage` a propósito (§4.1). Se
 verifica 👁, abriendo el archivo en una ventana privada.
+
+CB-13 tampoco tiene caso en `pruebas.js`, por la misma razón: "el selector manda"
+es una afirmación sobre `$fecha.value` y sobre `pintar()`, que viven en
+`reservas.html` y no en `reglas.js`. `reglas.js` no sabe qué es un selector; solo
+recibe `fecha` y `ahora` como parámetros en cada llamada, y nunca los guarda entre
+llamadas — por eso el selector puede mandar. Se verifica 👁: dejar el archivo
+abierto, cambiar la fecha del sistema o mover el selector, y confirmar que la
+cuadrícula sigue la fecha elegida, no la de cuando se cargó la página.
 
 ## 6. Criterios de aceptación
 

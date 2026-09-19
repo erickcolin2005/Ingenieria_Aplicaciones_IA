@@ -1,7 +1,7 @@
 # Momento 1 — Sistema de reservas del laboratorio
 
 **Curso:** Ingeniería de Aplicaciones con IA · Universidad Cooperativa de Colombia
-**Equipo:** Erick Albornoz · Frank Palma · Ana María Ruiz
+**Equipo:** Erick Albornoz · Frank Palma
 **Caso:** A — aplicación HTML sin librerías ni servidor
 
 20 puestos, franjas de dos horas, de 6:00 a 20:00. Construido con la cadena
@@ -21,7 +21,7 @@ node producto/pruebas.js        # en terminal
 ```
 
 o doble clic en `producto/pruebas.html` para verlos en el navegador. Debe decir
-**23/23**, y ninguno puede quedar en FALLA.
+**24/24**, y ninguno puede quedar en FALLA.
 
 > `producto/reglas.js` tiene que estar en la misma carpeta que los dos HTML. Los tres
 > archivos viajan juntos.
@@ -36,8 +36,8 @@ momento_1/
 ├── sync_skills.ps1                    copia skills/ -> .claude/skills/
 │
 ├── docs/
-│   ├── SPEC.md                        la especificación: 7 secciones, 17 criterios
-│   ├── PLAN.md                        9 tareas con dueño, dependencias y criterio sí/no
+│   ├── SPEC.md                        la especificación: 7 secciones, 20 criterios (v1.2)
+│   ├── PLAN.md                        13 tareas con dueño, dependencias y criterio sí/no
 │   ├── POLITICA_PERMISOS.md           qué puede hacer la herramienta y el peor escenario de cada cosa
 │   ├── PRUEBA_NECESIDAD.md            los seis ejes: por qué este producto no lleva modelo
 │   ├── DEMO.md                        guion de 6 minutos y plan B
@@ -46,9 +46,10 @@ momento_1/
 │       ├── contexto.md                qué cambió del contexto y por qué
 │       ├── loop.md                    rastro de explorar / planear / ejecutar / verificar
 │       ├── semana04.md                el reporte del reto
-│       ├── pruebas_skills.md          protocolo de pruebas de la cadena
+│       ├── pruebas_skills.md          protocolo y resultados de las pruebas de la cadena (corridas)
 │       ├── pruebas_permisos.md        protocolo de pruebas de los permisos
-│       └── revision_contexto_fresco.md
+│       ├── revision_contexto_fresco.md
+│       └── cambio_equipo.md           por qué el equipo pasó de tres a dos personas
 │
 ├── skills/                            fuente de verdad de los tres skills
 │   ├── escribir-spec/SKILL.md

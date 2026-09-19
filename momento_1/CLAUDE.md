@@ -2,8 +2,8 @@
 
 ## Qué es esto
 
-Momento 1 del curso Ingeniería de Aplicaciones con IA. Equipo: Erick Albornoz,
-Frank Palma y Ana María Ruiz. Producto: un sistema de reservas del laboratorio (20 puestos, franjas
+Momento 1 del curso Ingeniería de Aplicaciones con IA. Equipo: Erick Albornoz y
+Frank Palma (ver `docs/decisiones/cambio_equipo.md`). Producto: un sistema de reservas del laboratorio (20 puestos, franjas
 de 2 horas, 6:00–20:00) construido con la cadena `escribir-spec` → `escribir-plan`
 → `ejecutar-plan`.
 
