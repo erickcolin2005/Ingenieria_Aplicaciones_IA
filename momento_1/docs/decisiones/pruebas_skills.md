@@ -64,17 +64,21 @@ del skill por nombre. Sin ese dato, P-3 y P-4 quedan sin marcar: el contenido de
 respuestas fue el correcto, pero estas dos pruebas miden **activación**, no contenido, y
 darlas por buenas sin verlo sería justamente lo que este documento no hace.
 
-## Grupo B — El skill `escribir-spec`, medido dos veces
+## Grupo B — El skill `escribir-spec`
 
-El reto pide medirlo **antes y después** de redactar las tres descripciones juntas.
-La segunda columna es la que demuestra si la cadena mejoró o solo cambió.
+**El "antes" no es medible.** El reto pide medirlo antes y después de redactar las
+tres descripciones juntas, pero revisando el historial de git, el commit `36d286d`
+— el que creó los tres skills — ya los escribió con las tres descripciones juntas
+desde el principio. Nunca existió en el repo una versión con descripciones sueltas
+contra la cual comparar. Inventar un "antes" de memoria sería medir algo que no se
+midió. Queda declarado así, y se mide solo el "después", en una corrida real.
 
-| Medición | Antes (descripciones sueltas) | Después (las tres escritas juntas) |
-|---|---|---|
-| ¿Se activó sin nombrarlo? | | |
-| ¿Cuántas preguntas hizo antes de escribir? | | |
-| ¿Qué decisiones abiertas detectó solo? (de las seis: franjas seguidas, franjas diarias, anticipación, inasistencia, plazo de cancelación, puestos diferenciados, mantenimiento) | | |
-| ¿Rellenó alguna sección sin material? | | |
+| Medición | Después (las tres descripciones escritas juntas) |
+|---|---|
+| ¿Se activó sin nombrarlo? | |
+| ¿Cuántas preguntas hizo antes de escribir? | |
+| ¿Qué decisiones abiertas detectó solo? (de las seis: franjas seguidas, franjas diarias, anticipación, inasistencia, plazo de cancelación, puestos diferenciados, mantenimiento) | |
+| ¿Rellenó alguna sección sin material? | |
 
 ## Grupo C — El skill `escribir-plan`, las cuatro pruebas del reto
 
